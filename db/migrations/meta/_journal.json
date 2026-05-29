@@ -8,6 +8,13 @@
       "when": 1780055420213,
       "tag": "0000_lonely_starjammers",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1780059606597,
+      "tag": "0001_carddav_provider_connector",
+      "breakpoints": true
     }
   ]
 }
