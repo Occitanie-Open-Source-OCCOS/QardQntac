@@ -5,9 +5,9 @@ import { anyAuthenticatedAction } from "@/lib/actions";
 import { getProvider } from "@/lib/carddav";
 
 export const testProviderConnection = anyAuthenticatedAction
-	.schema(
+	.inputSchema(
 		z.object({
-			type: z.enum(["radicale", "baikal", "custom"]),
+			type: z.enum(["radicale", "baikal", "nextcloud", "custom"]),
 			url: z.string().min(1),
 			username: z.string().min(1),
 			password: z.string().min(1),

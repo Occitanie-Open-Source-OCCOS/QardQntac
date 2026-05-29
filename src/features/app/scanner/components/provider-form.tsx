@@ -22,6 +22,11 @@ const PROVIDER_META: Record<ProviderType, { name: string; urlPlaceholder: string
 		urlPlaceholder: "http://host/baikal/dav.php/addressbooks/user/default/",
 		urlHint: "URL de votre instance Baikal (dav.php/addressbooks/…)",
 	},
+	nextcloud: {
+		name: "Nextcloud",
+		urlPlaceholder: "https://nextcloud.example.com/remote.php/dav/addressbooks/users/username/contacts/",
+		urlHint: "Remplacez 'username' par votre identifiant Nextcloud",
+	},
 	custom: {
 		name: "Personnalisé",
 		urlPlaceholder: "https://carddav.example.com/addressbooks/user/contacts/",
@@ -65,12 +70,19 @@ export function ProviderForm({ initial, onSaved, onCancel }: ProviderFormProps) 
 		<form
 			onSubmit={(e) => {
 				e.preventDefault();
-				execSave({ id: initial?.id, type: providerType, label, url, username, password: password || undefined });
+				execSave({
+					id: initial?.id,
+					type: providerType,
+					label,
+					url,
+					username,
+					password: password || undefined,
+				});
 			}}
 			className="flex flex-col gap-3"
 		>
-			<div className="flex gap-1">
-				{(["radicale", "baikal", "custom"] as ProviderType[]).map((pt) => (
+			<div className="flex flex-col md:flex-row gap-1">
+				{(["radicale", "baikal", "nextcloud", "custom"] as ProviderType[]).map((pt) => (
 					<button
 						key={pt}
 						type="button"
@@ -130,21 +142,20 @@ export function ProviderForm({ initial, onSaved, onCancel }: ProviderFormProps) 
 				/>
 			</div>
 
-			<div className="flex gap-2 mt-1">
+			<div className="flex flex-col md:flex-row gap-2 mt-1">
 				<Button
 					type="button"
 					variant="outline"
 					size="sm"
 					disabled={!canTest || isTesting}
 					onClick={() => execTest({ type: providerType, url, username, password })}
-					className="flex-1"
 				>
 					{isTesting ? "…" : t("test_btn")}
 				</Button>
 				<Button type="button" variant="ghost" size="sm" onClick={onCancel}>
 					{t("cancel_btn")}
 				</Button>
-				<Button type="submit" size="sm" disabled={!canSave || isSaving} className="flex-1">
+				<Button type="submit" size="sm" disabled={!canSave || isSaving}>
 					{t("save_btn")}
 				</Button>
 			</div>

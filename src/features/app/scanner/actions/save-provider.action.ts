@@ -7,10 +7,10 @@ import { anyAuthenticatedAction } from "@/lib/actions";
 import { db } from "@/lib/db";
 
 export const saveProvider = anyAuthenticatedAction
-	.schema(
+	.inputSchema(
 		z.object({
-			id: z.string().uuid().optional(),
-			type: z.enum(["radicale", "baikal", "custom"]),
+			id: z.uuid().optional(),
+			type: z.enum(["radicale", "baikal", "nextcloud", "custom"]),
 			label: z.string().min(1),
 			url: z.string().min(1),
 			username: z.string().min(1),
@@ -25,7 +25,13 @@ export const saveProvider = anyAuthenticatedAction
 				.where(and(eq(userCardDavProviders.id, id), eq(userCardDavProviders.userId, userId)))
 				.limit(1);
 			if (!existing) throw new Error("Provider introuvable");
-			const updates: Record<string, unknown> = { type, label, url, username, updatedAt: new Date() };
+			const updates: Record<string, unknown> = {
+				type,
+				label,
+				url,
+				username,
+				updatedAt: new Date(),
+			};
 			if (password) updates.password = password;
 			await db
 				.update(userCardDavProviders)
@@ -36,7 +42,15 @@ export const saveProvider = anyAuthenticatedAction
 		if (!password) throw new Error("Password required for new provider");
 		const [row] = await db
 			.insert(userCardDavProviders)
-			.values({ userId, type, label, url, username, password, updatedAt: new Date() })
+			.values({
+				userId,
+				type,
+				label,
+				url,
+				username,
+				password,
+				updatedAt: new Date(),
+			})
 			.returning({ id: userCardDavProviders.id });
 		return { id: row.id };
 	});
