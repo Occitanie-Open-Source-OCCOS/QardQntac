@@ -55,6 +55,23 @@ cp .env.example .env
 
 L'inscription est restreinte aux domaines définis dans `config/restrictions.ts`. Modifiez `WHITELISTED_DOMAINS` pour autoriser vos domaines.
 
+### Ollama (provider local)
+
+Si vous utilisez `VISION_PROVIDER=ollama` (défaut), installez Ollama et téléchargez un modèle vision :
+
+```bash
+# Installer Ollama
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Télécharger le modèle vision (recommandé)
+ollama pull llama3.2-vision
+
+# Vérifier qu'Ollama tourne
+ollama serve
+```
+
+> Le modèle `llama3.2-vision` nécessite ~5 GB de RAM GPU. Alternative plus légère : `moondream` (~1.7 GB).
+
 ## Lancement
 
 ```bash
