@@ -2,10 +2,10 @@
 
 import { z } from "zod";
 import { anyAuthenticatedAction } from "@/lib/actions";
-import { parseCardImage } from "@/lib/ollama";
+import { parseCardImage } from "@/lib/vision";
 
 export const analyzeCard = anyAuthenticatedAction
-	.schema(z.object({ imageBase64: z.string().min(1) }))
+	.inputSchema(z.object({ imageBase64: z.string().min(1) }))
 	.action(async ({ parsedInput: { imageBase64 } }) => {
 		return parseCardImage(imageBase64);
 	});
