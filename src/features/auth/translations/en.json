@@ -1,0 +1,50 @@
+{
+  "emails": {
+    "magic-link": {
+      "subject": "Your login link",
+      "preview": "Log in to your account",
+      "heading": "Login link",
+      "greeting": "Here is your login link.",
+      "waitingConfirmation": "Click the button below to log in to your account. This link will expire in 15 minutes.",
+      "buttonLabel": "Log in",
+      "closing": "If you did not request this link, you can ignore this email.",
+      "teamPrefix": "The KardQntact team"
+    }
+  },
+  "login": {
+    "title": "Hello,",
+    "description": "To continue, please sign in.",
+    "email_placeholder": "Email address",
+    "submit": "Continue",
+    "emergency_trigger": "Login problem?",
+    "error_only_employees": "Email address not authorized."
+  },
+  "emergency": {
+    "title": "Emergency Access",
+    "description": "Enter your email address to receive a login link.",
+    "submit": "Send link",
+    "back": "Back to login"
+  },
+  "waiting": {
+    "title_standard": "Check your inbox,",
+    "title_emergency": "Check your access,",
+    "description_standard": "we just sent a login link to {email}.",
+    "description_emergency": "we just generated a recovery link for {email}.",
+    "help_standard": "Didn't receive anything? Check your spam or request a new link.",
+    "help_emergency": "If you don't see the link, request a new one.",
+    "resend": "Resend link",
+    "resend_countdown": "Resend ({seconds}s)",
+    "change_email": "Use another email address",
+    "open_email_client": "Open email client",
+    "open_mailpit": "Open Mailpit"
+  },
+  "toast": {
+    "check_email": "Check your email for the login link",
+    "check_console": "Check your access for the emergency link",
+    "error_generic": "Something went wrong"
+  },
+  "schema": {
+    "invalid_email": "Invalid email address",
+    "only_employees": "Email address not authorized."
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "capture": {
+    "title": "Scan a card",
+    "camera_btn": "Camera",
+    "gallery_btn": "Gallery",
+    "analyze_btn": "Analyze",
+    "camera_request": "Allow camera",
+    "camera_denied": "Camera denied — use gallery",
+    "capture_btn": "Capture",
+    "retake_btn": "Retake",
+    "preview_alt": "Business card preview"
+  },
+  "processing": {
+    "title": "Analyzing…",
+    "subtitle": "The model is extracting information"
+  },
+  "review": {
+    "title": "Review information",
+    "name": "Name",
+    "title_field": "Job title",
+    "company": "Company",
+    "email": "Email",
+    "phone": "Phone",
+    "website": "Website",
+    "address": "Address",
+    "save_btn": "Save",
+    "retry_btn": "Try again",
+    "saved_toast": "Contact saved"
+  },
+  "drawer": {
+    "title": "My contacts",
+    "empty": "No contacts scanned yet",
+    "download_vcf": "Download vCard",
+    "sync_radicale": "Sync Radicale",
+    "delete": "Delete",
+    "synced_label": "Synced",
+    "configure_carddav": "Configure Radicale",
+    "carddav_not_configured": "CardDAV not configured"
+  },
+  "carddav": {
+    "title": "Radicale server",
+    "url": "Server URL",
+    "url_placeholder": "http://radicale:5232/user/contacts/",
+    "username": "Username",
+    "password": "Password",
+    "save_btn": "Save",
+    "saved_toast": "Configuration saved"
+  },
+  "errors": {
+    "ollama_down": "Ollama unavailable — check it's running",
+    "sync_failed": "Sync failed",
+    "delete_failed": "Delete failed",
+    "carddav_not_configured": "Configure your Radicale server first"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "emails": {
+    "magic-link": {
+      "subject": "Votre lien de connexion",
+      "preview": "Connectez-vous à votre compte",
+      "heading": "Lien de connexion",
+      "greeting": "Voici votre lien de connexion.",
+      "waitingConfirmation": "Cliquez sur le bouton ci-dessous pour vous connecter à votre compte. Ce lien expirera dans 15 minutes.",
+      "buttonLabel": "Me connecter",
+      "closing": "Si vous n'avez pas demandé ce lien, vous pouvez ignorer cet e-mail.",
+      "teamPrefix": "L'équipe KardQntact"
+    }
+  },
+  "login": {
+    "title": "Bonjour,",
+    "description": "Pour continuer, identifiez-vous.",
+    "email_placeholder": "Adresse mail",
+    "submit": "Continuer",
+    "emergency_trigger": "Problème de connexion?",
+    "error_only_employees": "Adresse mail non autorisée."
+  },
+  "emergency": {
+    "title": "Accès d'urgence",
+    "description": "Entrez votre adresse mail pour recevoir un lien de connexion.",
+    "submit": "Envoyer le lien",
+    "back": "Retour à la connexion"
+  },
+  "waiting": {
+    "title_standard": "Vérifiez votre boîte mail,",
+    "title_emergency": "Vérifiez vos accès,",
+    "description_standard": "nous venons d'envoyer un lien de connexion à {email}.",
+    "description_emergency": "nous venons de générer un lien de récupération pour {email}.",
+    "help_standard": "Vous n'avez rien reçu ? Vérifiez vos spams ou demandez un nouveau lien.",
+    "help_emergency": "Si vous ne voyez pas le lien, demandez-en un nouveau.",
+    "resend": "Renvoyer le lien",
+    "resend_countdown": "Renvoyer ({seconds}s)",
+    "change_email": "Utiliser une autre adresse mail",
+    "open_email_client": "Ouvrir ma boîte mail",
+    "open_mailpit": "Ouvrir Mailpit"
+  },
+  "toast": {
+    "check_email": "Vérifiez vos e-mails pour le lien de connexion",
+    "check_console": "Vérifiez vos accès pour le lien d'urgence",
+    "error_generic": "Une erreur est survenue"
+  },
+  "schema": {
+    "invalid_email": "Adresse mail invalide",
+    "only_employees": "Adresse mail non autorisée."
+  }
+}

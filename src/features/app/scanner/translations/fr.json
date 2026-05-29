@@ -1,0 +1,55 @@
+{
+  "capture": {
+    "title": "Scanner une carte",
+    "camera_btn": "Caméra",
+    "gallery_btn": "Galerie",
+    "analyze_btn": "Analyser",
+    "camera_request": "Autoriser la caméra",
+    "camera_denied": "Caméra refusée — utilisez la galerie",
+    "capture_btn": "Capturer",
+    "retake_btn": "Reprendre",
+    "preview_alt": "Aperçu de la carte de visite"
+  },
+  "processing": {
+    "title": "Analyse en cours…",
+    "subtitle": "Le modèle extrait les informations"
+  },
+  "review": {
+    "title": "Vérifier les informations",
+    "name": "Nom",
+    "title_field": "Poste",
+    "company": "Société",
+    "email": "Email",
+    "phone": "Téléphone",
+    "website": "Site web",
+    "address": "Adresse",
+    "save_btn": "Sauvegarder",
+    "retry_btn": "Recommencer",
+    "saved_toast": "Contact sauvegardé"
+  },
+  "drawer": {
+    "title": "Mes contacts",
+    "empty": "Aucun contact scanné",
+    "download_vcf": "Télécharger vCard",
+    "sync_radicale": "Sync Radicale",
+    "delete": "Supprimer",
+    "synced_label": "Synchronisé",
+    "configure_carddav": "Configurer Radicale",
+    "carddav_not_configured": "CardDAV non configuré"
+  },
+  "carddav": {
+    "title": "Serveur Radicale",
+    "url": "URL du serveur",
+    "url_placeholder": "http://radicale:5232/user/contacts/",
+    "username": "Identifiant",
+    "password": "Mot de passe",
+    "save_btn": "Enregistrer",
+    "saved_toast": "Configuration sauvegardée"
+  },
+  "errors": {
+    "ollama_down": "Ollama indisponible — vérifiez qu'il tourne",
+    "sync_failed": "Échec de la synchronisation",
+    "delete_failed": "Échec de la suppression",
+    "carddav_not_configured": "Configurez d'abord votre serveur Radicale"
+  }
+}

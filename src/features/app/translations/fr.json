@@ -1,0 +1,23 @@
+{
+  "navbar": {
+    "profile": "Mon profil",
+    "sign_out": "Déconnexion",
+    "home": "Accueil",
+    "dashboard": "Dashboard"
+  },
+  "organizations": {
+    "profile": {
+      "completion": {
+        "title": "Complétez votre profil",
+        "description": "Pour continuer sur le dashboard, veuillez renseigner votre prénom et votre nom.",
+        "submit": "Enregistrer mon profil",
+        "firstname_placeholder": "Prénom",
+        "name_placeholder": "Nom"
+      },
+      "toast": {
+        "update_success": "Profil mis à jour avec succès",
+        "error_generic": "Une erreur est survenue lors de la mise à jour du profil"
+      }
+    }
+  }
+}
