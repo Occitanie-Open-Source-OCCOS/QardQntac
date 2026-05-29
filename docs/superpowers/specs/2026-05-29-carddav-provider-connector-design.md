@@ -100,7 +100,7 @@ export interface CardDavProvider {
   readonly urlPlaceholder: string
   readonly urlHint: string
 
-  testConnection(creds: CardDavCredentials): Promise<void>        // throws on failure
+  testConnection(creds: CardDavCredentials): Promise<void>        // throws on failure; impl: calls discoverBooks(), success = no throw
   saveContact(vcard: string, bookHref: string, creds: CardDavCredentials, remoteId?: string): Promise<string>
   deleteContact(remoteId: string, bookHref: string, creds: CardDavCredentials): Promise<void>
   discoverBooks(creds: CardDavCredentials): Promise<AddressBook[]>
@@ -136,7 +136,8 @@ export function getProvider(type: string): CardDavProvider {
 
 ### `list-providers`
 - `anyAuthenticatedAction` — no input
-- Returns all `userCardDavProviders` rows for `userId` (password excluded from response)
+- Returns all `userCardDavProviders` rows for `userId` — password is write-only, never returned
+- `ProviderForm` edit mode shows empty password field; user must re-enter to update password
 
 ### `save-provider`
 - Input: `{ id?: string, type, label, url, username, password }`
@@ -153,6 +154,7 @@ export function getProvider(type: string): CardDavProvider {
 - Lookup provider config by `providerId`
 - `getProvider(config.type)` → call `saveContact`
 - Update `contacts`: set `remoteId`, `providerId`, `syncedAt`
+- Re-sync to a different provider: just updates `providerId` + `remoteId` to new provider; old remote entry on previous provider is NOT deleted (user manages their server)
 
 ### `delete-contact` (modified)
 - If `contact.providerId` exists → lookup provider → `getProvider(type).deleteContact(remoteId, ...)`
