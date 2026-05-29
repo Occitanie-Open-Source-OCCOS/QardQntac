@@ -19,6 +19,12 @@ export const saveProvider = anyAuthenticatedAction
 	)
 	.action(async ({ parsedInput: { id, type, label, url, username, password }, ctx: { userId } }) => {
 		if (id) {
+			const [existing] = await db
+				.select({ id: userCardDavProviders.id })
+				.from(userCardDavProviders)
+				.where(and(eq(userCardDavProviders.id, id), eq(userCardDavProviders.userId, userId)))
+				.limit(1);
+			if (!existing) throw new Error("Provider introuvable");
 			const updates: Record<string, unknown> = { type, label, url, username, updatedAt: new Date() };
 			if (password) updates.password = password;
 			await db
@@ -30,7 +36,7 @@ export const saveProvider = anyAuthenticatedAction
 		if (!password) throw new Error("Password required for new provider");
 		const [row] = await db
 			.insert(userCardDavProviders)
-			.values({ userId, type, label, url, username, password })
+			.values({ userId, type, label, url, username, password, updatedAt: new Date() })
 			.returning({ id: userCardDavProviders.id });
 		return { id: row.id };
 	});
