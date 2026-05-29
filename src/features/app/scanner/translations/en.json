@@ -46,10 +46,29 @@
     "save_btn": "Save",
     "saved_toast": "Configuration saved"
   },
+  "providers": {
+    "title": "My providers",
+    "add_btn": "Add a provider",
+    "edit": "Edit",
+    "delete": "Delete",
+    "label": "Name",
+    "username": "Username",
+    "password": "Password",
+    "test_btn": "Test connection",
+    "test_success": "Connection successful",
+    "test_failed": "Connection failed",
+    "save_btn": "Save",
+    "cancel_btn": "Cancel",
+    "saved_toast": "Provider saved",
+    "deleted_toast": "Provider deleted",
+    "pick_provider": "Choose a provider",
+    "no_providers": "No providers configured"
+  },
   "errors": {
     "ollama_down": "Ollama unavailable — check it's running",
     "sync_failed": "Sync failed",
     "delete_failed": "Delete failed",
-    "carddav_not_configured": "Configure your Radicale server first"
+    "carddav_not_configured": "Configure your Radicale server first",
+    "no_providers_configured": "Configure a provider first"
   }
 }
