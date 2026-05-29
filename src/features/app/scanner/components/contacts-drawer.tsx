@@ -6,22 +6,18 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
-import type { UserCarddavConfig } from "@/db/schemas/contacts";
+import type { ProviderSummary } from "@/db/schemas/contacts";
 import { listContacts } from "../actions/list-contacts.action";
-import { CarddavConfigForm } from "./carddav-config-form";
+import { listProviders } from "../actions/list-providers.action";
 import { ContactItem } from "./contact-item";
+import { ProvidersManager } from "./providers-manager";
 
-interface ContactsDrawerProps {
-	carddavConfig: UserCarddavConfig | null;
-}
-
-export function ContactsDrawer({ carddavConfig: initialConfig }: ContactsDrawerProps) {
+export function ContactsDrawer() {
 	const t = useTranslations("scanner.drawer");
 	const [open, setOpen] = useState(false);
-	const [showCarddavForm, setShowCarddavForm] = useState(false);
-	const [carddavConfig, setCarddavConfig] = useState(initialConfig);
+	const [showProviders, setShowProviders] = useState(false);
 
-	const { data: contacts = [], refetch } = useQuery({
+	const { data: contacts = [], refetch: refetchContacts } = useQuery({
 		queryKey: ["contacts"],
 		queryFn: async () => {
 			const result = await listContacts();
@@ -30,14 +26,21 @@ export function ContactsDrawer({ carddavConfig: initialConfig }: ContactsDrawerP
 		enabled: open,
 	});
 
-	const carddavConfigured = !!carddavConfig;
+	const { data: providers = [], refetch: refetchProviders } = useQuery({
+		queryKey: ["providers"],
+		queryFn: async () => {
+			const result = await listProviders();
+			return (result?.data ?? []) as ProviderSummary[];
+		},
+		enabled: open,
+	});
 
 	return (
 		<>
 			<Button
 				size="icon"
 				variant="outline"
-				className={`fixed top-4 right-4 z-50 shadow-md border-primary`}
+				className="fixed top-4 right-4 z-50 shadow-md border-primary"
 				onClick={() => setOpen(true)}
 				title={t("title")}
 			>
@@ -54,37 +57,25 @@ export function ContactsDrawer({ carddavConfig: initialConfig }: ContactsDrawerP
 				<DrawerContent className="max-h-[85vh]">
 					<DrawerHeader className="flex flex-row items-center justify-between">
 						<DrawerTitle>{t("title")}</DrawerTitle>
-						<div className="flex gap-2">
-							<Button
-								size="icon-xs"
-								variant="ghost"
-								onClick={() => setShowCarddavForm((v) => !v)}
-								title={t("configure_carddav")}
-								className={"text-primary"}
-							>
-								<SettingsIcon className="size-4" />
-							</Button>
-						</div>
+						<Button
+							size="icon-xs"
+							variant="ghost"
+							onClick={() => setShowProviders((v) => !v)}
+							title={t("configure_carddav")}
+							className="text-primary"
+						>
+							<SettingsIcon className="size-4" />
+						</Button>
 					</DrawerHeader>
 
 					<div className="px-4 pb-8 overflow-y-auto">
-						{showCarddavForm && (
+						{showProviders && (
 							<div className="mb-4 p-4 rounded-xl bg-muted border border-border">
-								<CarddavConfigForm
-									initial={carddavConfig}
-									onSaved={() => {
-										setShowCarddavForm(false);
-										setCarddavConfig(
-											(prev) =>
-												prev ?? {
-													userId: "",
-													url: "",
-													username: "",
-													password: "",
-													createdAt: new Date(),
-													updatedAt: new Date(),
-												},
-										);
+								<ProvidersManager
+									providers={providers}
+									onMutated={() => {
+										refetchProviders();
+										refetchContacts();
 									}}
 								/>
 							</div>
@@ -94,12 +85,7 @@ export function ContactsDrawer({ carddavConfig: initialConfig }: ContactsDrawerP
 							<p className="text-sm text-muted-foreground text-center py-8">{t("empty")}</p>
 						) : (
 							contacts.map((contact) => (
-								<ContactItem
-									key={contact.id}
-									contact={contact}
-									carddavConfigured={carddavConfigured}
-									onMutated={refetch}
-								/>
+								<ContactItem key={contact.id} contact={contact} providers={providers} onMutated={refetchContacts} />
 							))
 						)}
 					</div>

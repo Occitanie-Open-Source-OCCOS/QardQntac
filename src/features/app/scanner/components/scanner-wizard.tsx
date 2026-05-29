@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
-import type { UserCarddavConfig } from "@/db/schemas/contacts";
 import type { ContactData } from "@/lib/types";
 import { ContactsDrawer } from "./contacts-drawer";
 import { CaptureStep } from "./steps/capture-step";
@@ -12,11 +11,7 @@ import { ReviewStep } from "./steps/review-step";
 
 type Step = "capture" | "processing" | "review";
 
-interface ScannerWizardProps {
-	carddavConfig: UserCarddavConfig | null;
-}
-
-export function ScannerWizard({ carddavConfig }: ScannerWizardProps) {
+export function ScannerWizard() {
 	const tErrors = useTranslations("scanner.errors");
 	const [step, setStep] = useState<Step>("capture");
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -48,7 +43,7 @@ export function ScannerWizard({ carddavConfig }: ScannerWizardProps) {
 
 	return (
 		<div className="relative min-h-[calc(100vh-4rem)]">
-			<ContactsDrawer carddavConfig={carddavConfig} />
+			<ContactsDrawer />
 
 			{step === "capture" && <CaptureStep onImageSelected={handleImageSelected} />}
 
