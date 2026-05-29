@@ -9,7 +9,7 @@ import { db } from "@/lib/db";
 import { generateVCard } from "@/lib/vcf";
 
 export const syncContact = anyAuthenticatedAction
-	.schema(z.object({ id: z.number(), providerId: z.string().uuid() }))
+	.inputSchema(z.object({ id: z.number(), providerId: z.uuid() }))
 	.action(async ({ parsedInput: { id, providerId }, ctx: { userId } }) => {
 		const [config] = await db
 			.select()

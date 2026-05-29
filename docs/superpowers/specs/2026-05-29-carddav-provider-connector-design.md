@@ -195,8 +195,8 @@ export function getProvider(type: string): CardDavProvider {
 
 ```json
 "providers": {
-  "title": "Mes providers",
-  "add_btn": "Ajouter un provider",
+  "title": "Mes connecteurs",
+  "add_btn": "Ajouter un connecteur",
   "edit": "Modifier",
   "delete": "Supprimer",
   "type_radicale": "Radicale",

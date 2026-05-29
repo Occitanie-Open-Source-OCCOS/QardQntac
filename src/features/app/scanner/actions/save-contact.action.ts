@@ -18,9 +18,8 @@ const contactSchema = z.object({
 });
 
 export const saveContact = anyAuthenticatedAction
-	.schema(contactSchema)
+	.inputSchema(contactSchema)
 	.action(async ({ parsedInput, ctx: { userId } }) => {
-		// Duplicate detection
 		const conditions = [];
 		if (parsedInput.email) conditions.push(eq(contacts.email, parsedInput.email));
 		if (parsedInput.phone) conditions.push(eq(contacts.phone, parsedInput.phone));

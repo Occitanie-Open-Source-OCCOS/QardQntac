@@ -1,8 +1,8 @@
 import { env } from "@/env";
-import { emptyContact } from "@/lib/types";
 import type { ContactData } from "@/lib/types";
+import { emptyContact } from "@/lib/types";
 import type { VisionProvider } from "../interface";
-import { SYSTEM_PROMPT, parseModelOutput } from "../shared";
+import { parseModelOutput, SYSTEM_PROMPT } from "../shared";
 
 export class GeminiProvider implements VisionProvider {
 	async analyzeCard(imageBase64: string): Promise<ContactData> {

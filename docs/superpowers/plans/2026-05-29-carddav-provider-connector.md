@@ -714,8 +714,8 @@ In `fr.json`, add a `"providers"` key at the same level as `"capture"`, `"drawer
 
 ```json
 "providers": {
-  "title": "Mes providers",
-  "add_btn": "Ajouter un provider",
+  "title": "Mes connecteurs",
+  "add_btn": "Ajouter un connecteur",
   "edit": "Modifier",
   "delete": "Supprimer",
   "label": "Nom",

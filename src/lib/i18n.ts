@@ -9,7 +9,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
 	const requestedLocale = await requestLocale;
 	const locale = requestedLocale && isValidLocale(requestedLocale) ? requestedLocale : routing.defaultLocale;
 
-	const dirs = ["emails", "auth", "app", "scanner"];
+	const dirs = ["emails", "auth", "scanner"];
 
 	const pathMap: Record<string, string> = {
 		scanner: "app/scanner",

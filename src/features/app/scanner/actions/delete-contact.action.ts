@@ -8,7 +8,7 @@ import { getProvider } from "@/lib/carddav";
 import { db } from "@/lib/db";
 
 export const deleteContact = anyAuthenticatedAction
-	.schema(z.object({ id: z.number() }))
+	.inputSchema(z.object({ id: z.number() }))
 	.action(async ({ parsedInput: { id }, ctx: { userId } }) => {
 		const [contact] = await db
 			.select()

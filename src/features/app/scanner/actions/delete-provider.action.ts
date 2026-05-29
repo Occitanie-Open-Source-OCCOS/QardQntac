@@ -7,7 +7,7 @@ import { anyAuthenticatedAction } from "@/lib/actions";
 import { db } from "@/lib/db";
 
 export const deleteProvider = anyAuthenticatedAction
-	.schema(z.object({ id: z.string().uuid() }))
+	.inputSchema(z.object({ id: z.uuid() }))
 	.action(async ({ parsedInput: { id }, ctx: { userId } }) => {
 		await db
 			.update(contacts)

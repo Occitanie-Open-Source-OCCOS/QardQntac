@@ -47,8 +47,8 @@
     "saved_toast": "Configuration sauvegardée"
   },
   "providers": {
-    "title": "Mes providers",
-    "add_btn": "Ajouter un provider",
+    "title": "Mes connecteurs",
+    "add_btn": "Ajouter un connecteur",
     "edit": "Modifier",
     "delete": "Supprimer",
     "label": "Nom",
