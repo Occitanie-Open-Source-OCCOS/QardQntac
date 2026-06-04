@@ -36,10 +36,12 @@ app/(app)/app/page.tsx
 - Controlled state: `useState<"scanner" | "contacts">`
 
 ### `ContactsGrid`
-- Search input at top (client-side filter on `contact.name`, `contact.company`, `contact.email`)
-- 2-column grid of `ContactCard` components
-- Empty state: "Aucun contact scanné"
-- No-results state: "Aucun résultat pour «query»"
+- Uses `@tanstack/react-table` (headless) for filtering — renders as 2-column card grid, not `<table>`
+- `useReactTable` with `globalFilter` state wired to search input; `getFilteredRowModel()` + `globalFilterFn: "includesString"` on `name`, `company`, `email` fields
+- Search input at top controls `globalFilter`
+- Renders `table.getRowModel().rows` as `ContactCard` components
+- Empty state (0 contacts total): "Aucun contact scanné"
+- No-results state (filter active, 0 rows): "Aucun résultat pour «query»"
 - ⚙️ icon button top-right → toggles `ProvidersManager` panel (existing component)
 
 ### `ContactCard`
@@ -55,7 +57,11 @@ app/(app)/app/page.tsx
 - `useQuery(["contacts"])` on mount (no `enabled` gate — always loaded in contacts tab)
 - `useQuery(["providers"])` on mount same tab
 - Both refetch after any mutation (save, delete, sync)
-- Search filtering is client-side only — no server query
+- Search filtering is client-side via TanStack Table `globalFilter` — no server query
+
+## Dependencies
+
+- Add `@tanstack/react-table` (not yet installed — `pnpm add @tanstack/react-table`)
 
 ## Removals
 
