@@ -1,6 +1,7 @@
 // src/features/app/layouts/app-header.tsx
 "use client";
 
+import { useTransition } from "react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -17,6 +18,7 @@ export function AppHeader() {
 	const t = useTranslations("app.header");
 	const router = useRouter();
 	const { data: session } = authClient.useSession();
+	const [isPending, startTransition] = useTransition();
 
 	const name = session?.user.name ?? "";
 	const email = session?.user.email ?? "";
@@ -29,9 +31,15 @@ export function AppHeader() {
 				.slice(0, 2)
 		: email.slice(0, 2).toUpperCase();
 
-	const handleSignOut = async () => {
-		await authClient.signOut();
-		router.push("/portal");
+	const handleSignOut = () => {
+		startTransition(async () => {
+			try {
+				await authClient.signOut();
+				router.push("/portal");
+			} catch (error) {
+				console.error("Sign out failed:", error);
+			}
+		});
 	};
 
 	return (
@@ -56,9 +64,10 @@ export function AppHeader() {
 					)}
 					<DropdownMenuItem
 						onClick={handleSignOut}
+						disabled={isPending}
 						className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
 					>
-						{t("sign_out")}
+						{isPending ? "…" : t("sign_out")}
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
