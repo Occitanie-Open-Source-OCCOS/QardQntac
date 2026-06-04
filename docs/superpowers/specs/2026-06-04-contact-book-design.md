@@ -97,9 +97,49 @@ New keys needed in `scanner/translations/fr.json` and `en.json`:
 }
 ```
 
+## File Structure
+
+```
+src/features/app/
+├── layouts/
+│   ├── dashboard.tsx                        (unchanged)
+│   ├── page.tsx                             (unchanged)
+│   ├── app-header.tsx                       (NEW)
+│   └── app-tabs.tsx                         (NEW)
+├── scanner/
+│   ├── actions/
+│   │   └── analyze-card.action.ts           (unchanged)
+│   ├── components/
+│   │   ├── scanner-wizard.tsx               (modified — remove ContactsDrawer)
+│   │   └── steps/{capture,processing,review}-step.tsx (unchanged)
+│   └── translations/{fr,en}.json           (trim to scanner-only keys)
+├── contacts/
+│   ├── actions/
+│   │   ├── list-contacts.action.ts          (moved from scanner/)
+│   │   ├── save-contact.action.ts           (moved from scanner/)
+│   │   ├── delete-contact.action.ts         (moved from scanner/)
+│   │   └── sync-contact.action.ts           (moved from scanner/)
+│   ├── components/
+│   │   ├── contacts-grid.tsx                (NEW — TanStack Table + grid)
+│   │   └── contact-card.tsx                 (NEW — replaces contact-item.tsx)
+│   └── translations/{fr,en}.json           (NEW)
+└── providers/
+    ├── actions/
+    │   ├── list-providers.action.ts         (moved from scanner/)
+    │   ├── save-provider.action.ts          (moved from scanner/)
+    │   ├── delete-provider.action.ts        (moved from scanner/)
+    │   └── test-provider-connection.action.ts (moved from scanner/)
+    ├── components/
+    │   ├── providers-manager.tsx            (moved from scanner/)
+    │   └── provider-form.tsx                (moved from scanner/)
+    └── translations/{fr,en}.json           (NEW — extracted from scanner/)
+```
+
+**Deleted:** `scanner/components/contacts-drawer.tsx`, `scanner/components/contact-item.tsx`
+
 ## Constraints
 
 - `max-w-420` container kept (existing dashboard layout)
 - No routing changes — stays on `/app`
-- Existing `ContactItem` logic (sync picker, download) reused inside `ContactCard`
-- `ProvidersManager` component unchanged
+- Existing sync picker + download logic reused inside `ContactCard`
+- `ProvidersManager` component logic unchanged (only moved)
