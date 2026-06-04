@@ -47,13 +47,15 @@ export function AppHeader() {
 			<span className="text-base font-bold tracking-tight">Kardqntact</span>
 
 			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<button
-						type="button"
-						className="size-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-					>
-						{initials}
-					</button>
+				<DropdownMenuTrigger
+					render={
+						<button
+							type="button"
+							className="size-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+						/>
+					}
+				>
+					{initials}
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end" className="w-48">
 					{email && (
