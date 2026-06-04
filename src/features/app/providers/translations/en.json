@@ -1,0 +1,18 @@
+{
+  "title": "My providers",
+  "add_btn": "Add a provider",
+  "edit": "Edit",
+  "delete": "Delete",
+  "label": "Name",
+  "username": "Username",
+  "password": "Password",
+  "test_btn": "Test connection",
+  "test_success": "Connection successful",
+  "test_failed": "Connection failed",
+  "save_btn": "Save",
+  "cancel_btn": "Cancel",
+  "saved_toast": "Provider saved",
+  "deleted_toast": "Provider deleted",
+  "pick_provider": "Choose a provider",
+  "no_providers": "No providers configured"
+}

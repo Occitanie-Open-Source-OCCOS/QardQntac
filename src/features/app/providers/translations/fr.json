@@ -1,0 +1,18 @@
+{
+  "title": "Mes connecteurs",
+  "add_btn": "Ajouter un connecteur",
+  "edit": "Modifier",
+  "delete": "Supprimer",
+  "label": "Nom",
+  "username": "Identifiant",
+  "password": "Mot de passe",
+  "test_btn": "Tester la connexion",
+  "test_success": "Connexion réussie",
+  "test_failed": "Connexion échouée",
+  "save_btn": "Enregistrer",
+  "cancel_btn": "Annuler",
+  "saved_toast": "Provider enregistré",
+  "deleted_toast": "Provider supprimé",
+  "pick_provider": "Choisir un provider",
+  "no_providers": "Aucun provider configuré"
+}
