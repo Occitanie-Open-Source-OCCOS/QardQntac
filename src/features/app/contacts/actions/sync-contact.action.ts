@@ -1,8 +1,8 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
-import { contacts, userCardDavProviders } from "@/db/schemas";
+import { contactTags, contacts, tags, userCardDavProviders } from "@/db/schemas";
 import { anyAuthenticatedAction } from "@/lib/actions";
 import { getProvider } from "@/lib/carddav";
 import { db } from "@/lib/db";
@@ -23,7 +23,14 @@ export const syncContact = anyAuthenticatedAction
 			.where(and(eq(contacts.id, id), eq(contacts.userId, userId)));
 		if (!contact) throw new Error("Contact introuvable");
 
-		const vcard = generateVCard(contact);
+		const ctRows = await db.select({ tagId: contactTags.tagId }).from(contactTags).where(eq(contactTags.contactId, id));
+		let tagNames: string[] = [];
+		if (ctRows.length > 0) {
+			const tagRows = await db.select({ name: tags.name }).from(tags).where(inArray(tags.id, ctRows.map((r) => r.tagId)));
+			tagNames = tagRows.map((r) => r.name);
+		}
+
+		const vcard = generateVCard(contact, tagNames);
 		const provider = getProvider(config.type);
 		const remoteId = await provider.saveContact(
 			vcard,

@@ -118,7 +118,7 @@ export function ContactCard({ contact, providers, allTags, assignedTagIds, onMut
 			</div>
 
 			<div className="flex gap-1 items-center">
-				<Button size="icon-xs" variant="ghost" onClick={() => downloadVCard(contact)} title={t("download_vcf")}>
+				<Button size="icon-xs" variant="ghost" onClick={() => downloadVCard(contact, allTags.filter((tag) => assignedTagIds.includes(tag.id)).map((tag) => tag.name))} title={t("download_vcf")}>
 					<DownloadIcon className="size-3.5" />
 				</Button>
 				<Button size="icon-xs" variant="ghost" disabled={isSyncing} onClick={handleSyncClick} title={t("sync")}>
