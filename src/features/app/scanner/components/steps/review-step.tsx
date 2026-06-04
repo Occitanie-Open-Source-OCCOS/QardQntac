@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ContactData } from "@/lib/types";
-import { saveContact } from "../../actions/save-contact.action";
+import { saveContact } from "@/features/app/contacts/actions/save-contact.action";
 
 interface ReviewStepProps {
 	imageUrl: string;
