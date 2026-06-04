@@ -1,0 +1,67 @@
+// src/features/app/layouts/app-header.tsx
+"use client";
+
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import authClient from "@/lib/auth/client";
+
+export function AppHeader() {
+	const t = useTranslations("app.header");
+	const router = useRouter();
+	const { data: session } = authClient.useSession();
+
+	const name = session?.user.name ?? "";
+	const email = session?.user.email ?? "";
+	const initials = name
+		? name
+				.split(" ")
+				.map((n: string) => n[0])
+				.join("")
+				.toUpperCase()
+				.slice(0, 2)
+		: email.slice(0, 2).toUpperCase();
+
+	const handleSignOut = async () => {
+		await authClient.signOut();
+		router.push("/portal");
+	};
+
+	return (
+		<header className="sticky top-0 z-50 bg-background border-b border-border px-4 py-3 flex items-center justify-between">
+			<span className="text-base font-bold tracking-tight">Kardqntact</span>
+
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<button
+						type="button"
+						className="size-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					>
+						{initials}
+					</button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end" className="w-48">
+					{email && (
+						<>
+							<DropdownMenuLabel className="text-xs font-normal text-muted-foreground truncate">{email}</DropdownMenuLabel>
+							<DropdownMenuSeparator />
+						</>
+					)}
+					<DropdownMenuItem
+						onClick={handleSignOut}
+						className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
+					>
+						{t("sign_out")}
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</header>
+	);
+}
