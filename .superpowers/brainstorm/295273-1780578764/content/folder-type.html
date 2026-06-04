@@ -1,0 +1,30 @@
+<h2>Quel type d'organisation ?</h2>
+<p class="subtitle">Les contacts existent déjà — les dossiers viennent s'y ajouter</p>
+
+<div class="options">
+
+  <div class="option" data-choice="flat" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Dossiers plats</h3>
+      <p>Dossiers simples sans hiérarchie. Ex: "Travail", "Famille", "Événement BizDay". Un contact = un dossier.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="tags" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Tags / étiquettes</h3>
+      <p>Un contact peut appartenir à plusieurs catégories simultanément. Ex: Jean Dupont → "Client" + "Paris" + "Lead". Plus flexible que les dossiers.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="nested" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Dossiers hiérarchiques</h3>
+      <p>Dossiers avec sous-dossiers. Ex: Travail → Clients → France. Plus puissant mais plus complexe à gérer.</p>
+    </div>
+  </div>
+
+</div>

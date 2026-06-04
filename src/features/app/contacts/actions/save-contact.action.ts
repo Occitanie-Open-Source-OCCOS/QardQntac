@@ -1,7 +1,5 @@
 "use server";
 
-import { unlink } from "node:fs/promises";
-import { basename, join } from "node:path";
 import { and, eq, or } from "drizzle-orm";
 import { z } from "zod";
 import { contacts } from "@/db/schemas";
@@ -16,7 +14,6 @@ const contactSchema = z.object({
 	phone: z.string(),
 	website: z.string(),
 	address: z.string(),
-	imageUrl: z.string().optional(),
 });
 
 export const saveContact = anyAuthenticatedAction
@@ -39,18 +36,10 @@ export const saveContact = anyAuthenticatedAction
 			}
 		}
 
-		const { imageUrl, ...contactData } = parsedInput;
 		const [contact] = await db
 			.insert(contacts)
-			.values({ userId, ...contactData })
+			.values({ userId, ...parsedInput })
 			.returning({ id: contacts.id });
-
-		if (imageUrl?.startsWith("/uploads/")) {
-			try {
-				const safe = basename(imageUrl.replace("/uploads/", ""));
-				await unlink(join(process.cwd(), "public", "uploads", safe));
-			} catch { /* ignore if already deleted */ }
-		}
 
 		return { id: contact.id };
 	});

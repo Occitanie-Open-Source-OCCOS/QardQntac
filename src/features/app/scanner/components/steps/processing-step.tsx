@@ -8,24 +8,15 @@ import { analyzeCard } from "../../actions/analyze-card.action";
 
 interface ProcessingStepProps {
 	file: File;
-	onDone: (imageUrl: string, data: ContactData) => void;
+	onDone: (imageDataUrl: string, data: ContactData) => void;
 	onError: (message: string) => void;
 }
 
-async function uploadFile(file: File): Promise<string> {
-	const formData = new FormData();
-	formData.append("file", file);
-	const res = await fetch("/api/uploads", { method: "POST", body: formData });
-	if (!res.ok) throw new Error("Upload échoué");
-	const json = await res.json();
-	return json.url as string;
-}
-
-async function fileToBase64(file: File): Promise<string> {
+async function fileToDataUrl(file: File): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();
 		reader.readAsDataURL(file);
-		reader.onload = () => resolve((reader.result as string).split(",")[1]);
+		reader.onload = () => resolve(reader.result as string);
 		reader.onerror = reject;
 	});
 }
@@ -39,8 +30,9 @@ export function ProcessingStep({ file, onDone, onError }: ProcessingStepProps) {
 		let cancelled = false;
 		async function run() {
 			try {
-				const [imageUrl, imageBase64] = await Promise.all([uploadFile(file), fileToBase64(file)]);
+				const imageDataUrl = await fileToDataUrl(file);
 				if (cancelled) return;
+				const imageBase64 = imageDataUrl.split(",")[1];
 				const result = await executeAsync({ imageBase64 });
 				if (cancelled) return;
 				if (result?.serverError) {
@@ -48,7 +40,7 @@ export function ProcessingStep({ file, onDone, onError }: ProcessingStepProps) {
 					return;
 				}
 				if (result?.data) {
-					onDone(imageUrl, result.data);
+					onDone(imageDataUrl, result.data);
 				}
 			} catch (e) {
 				if (!cancelled) onError(e instanceof Error ? e.message : tErrors("ollama_down"));

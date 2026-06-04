@@ -1,0 +1,57 @@
+<h2>Tags — scroll horizontal + couleurs</h2>
+<p class="subtitle">Confirme l'approche avant le design final</p>
+
+<div class="section">
+  <h3>Chips scrollables (mobile)</h3>
+  <div style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:12px;">
+    <div style="overflow-x:auto;white-space:nowrap;padding-bottom:4px;margin-bottom:2px;">
+      <div style="display:inline-flex;gap:6px;">
+        <div style="display:inline-flex;padding:4px 12px;background:#6366f1;color:white;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;">Tous (12)</div>
+        <div style="display:inline-flex;padding:4px 12px;background:#ede9fe;color:#6366f1;border-radius:20px;font-size:11px;white-space:nowrap;">💼 Travail (4)</div>
+        <div style="display:inline-flex;padding:4px 12px;background:#dcfce7;color:#16a34a;border-radius:20px;font-size:11px;white-space:nowrap;">🤝 Clients (3)</div>
+        <div style="display:inline-flex;padding:4px 12px;background:#fef9c3;color:#ca8a04;border-radius:20px;font-size:11px;white-space:nowrap;">📍 Paris (5)</div>
+        <div style="display:inline-flex;padding:4px 12px;background:#fee2e2;color:#dc2626;border-radius:20px;font-size:11px;white-space:nowrap;">🎯 Leads (2)</div>
+        <div style="display:inline-flex;padding:4px 12px;background:#f0f9ff;color:#0369a1;border-radius:20px;font-size:11px;white-space:nowrap;">🌐 Remote (1)</div>
+      </div>
+    </div>
+    <p style="font-size:10px;color:#aaa;margin:0;">← swipe pour voir plus →</p>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Palette de couleurs pour un tag</h3>
+  <p style="font-size:12px;color:#666;margin-bottom:8px;">Palette fixe de 8 couleurs — simple, cohérent, pas de color picker complet</p>
+  <div style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:12px;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+      <div style="width:28px;height:28px;border-radius:50%;background:#6366f1;cursor:pointer;box-shadow:0 0 0 3px white,0 0 0 5px #6366f1;"></div>
+      <div style="width:28px;height:28px;border-radius:50%;background:#10b981;cursor:pointer;"></div>
+      <div style="width:28px;height:28px;border-radius:50%;background:#f59e0b;cursor:pointer;"></div>
+      <div style="width:28px;height:28px;border-radius:50%;background:#ef4444;cursor:pointer;"></div>
+      <div style="width:28px;height:28px;border-radius:50%;background:#3b82f6;cursor:pointer;"></div>
+      <div style="width:28px;height:28px;border-radius:50%;background:#ec4899;cursor:pointer;"></div>
+      <div style="width:28px;height:28px;border-radius:50%;background:#8b5cf6;cursor:pointer;"></div>
+      <div style="width:28px;height:28px;border-radius:50%;background:#64748b;cursor:pointer;"></div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <input style="flex:1;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:11px;" placeholder="Nom du tag…" value="Travail" readonly/>
+      <div style="padding:4px 10px;background:#6366f1;color:white;border-radius:6px;font-size:11px;">Créer</div>
+    </div>
+  </div>
+</div>
+
+<div class="options" style="margin-top:16px;">
+  <div class="option" data-choice="approve" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Approuvé</h3>
+      <p>Chips scrollables + palette 8 couleurs fixes</p>
+    </div>
+  </div>
+  <div class="option" data-choice="fullpicker" onclick="toggleSelect(this)">
+    <div class="letter">+</div>
+    <div class="content">
+      <h3>Color picker complet</h3>
+      <p>Couleur libre (hex/HSL) au lieu d'une palette</p>
+    </div>
+  </div>
+</div>

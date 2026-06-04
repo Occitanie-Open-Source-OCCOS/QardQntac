@@ -14,151 +14,193 @@ import { deleteContact } from "../actions/delete-contact.action";
 import { syncContact } from "../actions/sync-contact.action";
 
 const AVATAR_COLORS = [
-	"bg-violet-500",
-	"bg-emerald-500",
-	"bg-amber-500",
-	"bg-rose-500",
-	"bg-sky-500",
-	"bg-orange-500",
+  "bg-violet-500",
+  "bg-emerald-500",
+  "bg-amber-500",
+  "bg-rose-500",
+  "bg-sky-500",
+  "bg-orange-500",
 ];
 
 function getAvatarColor(name: string): string {
-	const index = name.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % AVATAR_COLORS.length;
-	return AVATAR_COLORS[index];
+  const index =
+    name.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) %
+    AVATAR_COLORS.length;
+  return AVATAR_COLORS[index];
 }
 
 interface ContactCardProps {
-	contact: Contact;
-	providers: ProviderSummary[];
-	allTags: Tag[];
-	assignedTagIds: string[];
-	onMutated: () => void;
+  contact: Contact;
+  providers: ProviderSummary[];
+  allTags: Tag[];
+  assignedTagIds: string[];
+  onMutated: () => void;
 }
 
-export function ContactCard({ contact, providers, allTags, assignedTagIds, onMutated }: ContactCardProps) {
-	const t = useTranslations("contacts.card");
-	const tErrors = useTranslations("contacts.errors");
-	const tProviders = useTranslations("providers");
-	const [showPicker, setShowPicker] = useState(false);
+export function ContactCard({
+  contact,
+  providers,
+  allTags,
+  assignedTagIds,
+  onMutated,
+}: ContactCardProps) {
+  const t = useTranslations("contacts.card");
+  const tErrors = useTranslations("contacts.errors");
+  const tProviders = useTranslations("providers");
+  const [showPicker, setShowPicker] = useState(false);
 
-	const { execute: execDelete, isPending: isDeleting } = useAction(deleteContact, {
-		onSuccess: onMutated,
-		onError: () => toast.error(tErrors("delete_failed")),
-	});
+  const { execute: execDelete, isPending: isDeleting } = useAction(
+    deleteContact,
+    {
+      onSuccess: onMutated,
+      onError: () => toast.error(tErrors("delete_failed")),
+    },
+  );
 
-	const { execute: execSync, isPending: isSyncing } = useAction(syncContact, {
-		onSuccess: () => {
-			toast.success(t("synced_label"));
-			setShowPicker(false);
-			onMutated();
-		},
-		onError: ({ error }) => toast.error(error.serverError ?? tErrors("sync_failed")),
-	});
+  const { execute: execSync, isPending: isSyncing } = useAction(syncContact, {
+    onSuccess: () => {
+      toast.success(t("synced_label"));
+      setShowPicker(false);
+      onMutated();
+    },
+    onError: ({ error }) =>
+      toast.error(error.serverError ?? tErrors("sync_failed")),
+  });
 
-	const handleSyncClick = () => {
-		if (providers.length === 0) {
-			toast.error(tErrors("no_providers_configured"));
-			return;
-		}
-		if (providers.length === 1) {
-			execSync({ id: contact.id, providerId: providers[0].id });
-			return;
-		}
-		setShowPicker((v) => !v);
-	};
+  const handleSyncClick = () => {
+    if (providers.length === 0) {
+      toast.error(tErrors("no_providers_configured"));
+      return;
+    }
+    if (providers.length === 1) {
+      execSync({ id: contact.id, providerId: providers[0].id });
+      return;
+    }
+    setShowPicker((v) => !v);
+  };
 
-	const initials = contact.name
-		? contact.name
-				.split(" ")
-				.map((n) => n[0])
-				.join("")
-				.toUpperCase()
-				.slice(0, 2)
-		: "?";
+  const initials = contact.name
+    ? contact.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "?";
 
-	const avatarColor = getAvatarColor(contact.name || "?");
-	const syncedProvider = providers.find((p) => p.id === contact.providerId);
-	const subtitle = contact.company || contact.email || "";
-	const assignedTags = allTags.filter((tag) => assignedTagIds.includes(tag.id));
-	const visibleTags = assignedTags.slice(0, 3);
-	const extraCount = assignedTags.length - visibleTags.length;
+  const avatarColor = getAvatarColor(contact.name || "?");
+  const syncedProvider = providers.find((p) => p.id === contact.providerId);
+  const subtitle = contact.company || contact.email || "";
+  const assignedTags = allTags.filter((tag) => assignedTagIds.includes(tag.id));
+  const visibleTags = assignedTags.slice(0, 3);
+  const extraCount = assignedTags.length - visibleTags.length;
 
-	return (
-		<div className="bg-card border border-border rounded-xl p-3 flex flex-col items-center gap-2 text-center">
-			<div className={`size-12 rounded-full ${avatarColor} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
-				{initials}
-			</div>
+  return (
+    <div className="bg-card border border-border rounded-xl p-3 flex flex-col items-center gap-2 text-center">
+      <div
+        className={`size-12 rounded-full ${avatarColor} text-white flex items-center justify-center text-sm font-bold shrink-0`}
+      >
+        {initials}
+      </div>
 
-			<div className="w-full min-w-0">
-				<p className="font-semibold text-sm truncate">{contact.name || "—"}</p>
-				{subtitle && <p className="text-xs text-muted-foreground truncate">{subtitle}</p>}
-				{syncedProvider && (
-					<p className="text-xs text-green-600 truncate">
-						✓ {t("synced_label")} · {syncedProvider.label}
-					</p>
-				)}
-				{visibleTags.length > 0 && (
-					<div className="flex flex-wrap gap-1 justify-center mt-1">
-						{visibleTags.map((tag) => (
-							<span
-								key={tag.id}
-								className="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
-								style={{ backgroundColor: `${tag.color}22`, color: tag.color, border: `1px solid ${tag.color}44` }}
-							>
-								{tag.name}
-							</span>
-						))}
-						{extraCount > 0 && (
-							<span className="px-1.5 py-0.5 rounded-full text-[10px] text-muted-foreground bg-muted">
-								+{extraCount}
-							</span>
-						)}
-					</div>
-				)}
-			</div>
+      <div className="w-full min-w-0">
+        <p className="font-semibold text-sm truncate">{contact.name || "—"}</p>
+        {subtitle && (
+          <p className="text-xs text-muted-foreground truncate">{subtitle}</p>
+        )}
+        {syncedProvider && (
+          <p className="text-xs text-green-600 truncate">
+            ✓ {t("synced_label")} · {syncedProvider.label}
+          </p>
+        )}
+        {visibleTags.length > 0 && (
+          <div className="flex flex-wrap gap-1 justify-center mt-1">
+            {visibleTags.map((tag) => (
+              <span
+                key={tag.id}
+                className="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
+                style={{
+                  backgroundColor: `${tag.color}22`,
+                  color: tag.color,
+                  border: `1px solid ${tag.color}44`,
+                }}
+              >
+                {tag.name}
+              </span>
+            ))}
+            {extraCount > 0 && (
+              <span className="px-1.5 py-0.5 rounded-full text-[10px] text-muted-foreground bg-muted">
+                +{extraCount}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
 
-			<div className="flex gap-1 items-center">
-				<Button size="icon-xs" variant="ghost" onClick={() => downloadVCard(contact, allTags.filter((tag) => assignedTagIds.includes(tag.id)).map((tag) => tag.name))} title={t("download_vcf")}>
-					<DownloadIcon className="size-3.5" />
-				</Button>
-				<Button size="icon-xs" variant="ghost" disabled={isSyncing} onClick={handleSyncClick} title={t("sync")}>
-					<RefreshCwIcon className={`size-3.5 ${isSyncing ? "animate-spin" : ""}`} />
-				</Button>
-				<Button
-					size="icon-xs"
-					variant="ghost"
-					disabled={isDeleting}
-					onClick={() => execDelete({ id: contact.id })}
-					title={t("delete")}
-					className="text-red-500 hover:text-red-600"
-				>
-					<Trash2Icon className="size-3.5" />
-				</Button>
-				<TagPopover
-					contactId={contact.id}
-					assignedTagIds={assignedTagIds}
-					allTags={allTags}
-					onMutated={onMutated}
-				/>
-			</div>
+      <div className="flex gap-1 items-center">
+        <Button
+          size="icon-xs"
+          variant="ghost"
+          onClick={() =>
+            downloadVCard(
+              contact,
+              allTags
+                .filter((tag) => assignedTagIds.includes(tag.id))
+                .map((tag) => tag.name),
+            )
+          }
+          title={t("download_vcf")}
+        >
+          <DownloadIcon className="size-3.5" />
+        </Button>
+        <Button
+          size="icon-xs"
+          variant="ghost"
+          disabled={isSyncing}
+          onClick={handleSyncClick}
+          title={t("sync")}
+        >
+          <RefreshCwIcon
+            className={`size-3.5 ${isSyncing ? "animate-spin" : ""}`}
+          />
+        </Button>
+        <Button
+          size="icon-xs"
+          variant="ghost"
+          disabled={isDeleting}
+          onClick={() => execDelete({ id: contact.id })}
+          title={t("delete")}
+          className="text-red-500 hover:text-red-600"
+        >
+          <Trash2Icon className="size-3.5" />
+        </Button>
+        <TagPopover
+          contactId={contact.id}
+          assignedTagIds={assignedTagIds}
+          allTags={allTags}
+          onMutated={onMutated}
+        />
+      </div>
 
-			{showPicker && (
-				<div className="w-full flex flex-col gap-1 pt-1 border-t border-border">
-					<p className="text-xs text-muted-foreground">{tProviders("pick_provider")}</p>
-					{providers.map((p) => (
-						<button
-							key={p.id}
-							type="button"
-							onClick={() => execSync({ id: contact.id, providerId: p.id })}
-							disabled={isSyncing}
-							className="w-full text-left px-2 py-1.5 rounded-lg text-xs hover:bg-muted transition-colors flex items-center justify-between"
-						>
-							<span>{p.label}</span>
-							<span className="text-muted-foreground capitalize">{p.type}</span>
-						</button>
-					))}
-				</div>
-			)}
-		</div>
-	);
+      {showPicker && (
+        <div className="w-full flex flex-col gap-1 pt-1 border-t border-border">
+          <p className="text-xs text-muted-foreground">
+            {tProviders("pick_provider")}
+          </p>
+          {providers.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => execSync({ id: contact.id, providerId: p.id })}
+              disabled={isSyncing}
+              className="w-full text-left px-2 py-1.5 rounded-lg text-xs hover:bg-muted transition-colors flex items-center justify-between"
+            >
+              <span>{p.label}</span>
+              <span className="text-muted-foreground capitalize">{p.type}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

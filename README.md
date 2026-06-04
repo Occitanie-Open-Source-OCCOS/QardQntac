@@ -1,127 +1,347 @@
 # KardQntact
 
-Analyseur de cartes de visite open source. Prenez en photo une carte de visite → l'IA extrait les informations → sauvegardez dans votre carnet de contacts, exportez en vCard ou synchronisez vers un serveur CardDAV.
+**KardQntact** is an open-source, self-hosted business card scanner. Take a photo of a business card, let AI extract the contact information, then save it to your address book — or sync it directly to any CardDAV server (Nextcloud, Radicale, Baikal, …).
 
-## Fonctionnalités
+---
 
-- **Scan de cartes de visite** — capture par caméra (live preview) ou galerie
-- **Extraction automatique** — via Ollama (local) ou un provider cloud (OpenAI, Anthropic, Gemini), configurable via `.env`
-- **Gestion des contacts** — liste, téléchargement vCard, détection des doublons
-- **Sync CardDAV** — Radicale, Baikal, Nextcloud ou serveur personnalisé
-- **Multi-providers** — configurez plusieurs serveurs CardDAV, choisissez le provider par contact
-- **Authentification** — magic link uniquement, accès restreint par domaine email
+## What it does
 
-## Prérequis
+1. **Scan** — take a photo with your phone camera or upload an image from your gallery
+2. **Extract** — AI reads the card and fills in the contact fields (name, company, phone, email, website, address)
+3. **Review** — correct any mistakes before saving
+4. **Tag** — organize contacts with color-coded tags
+5. **Export or sync** — download a `.vcf` file or push the contact to a CardDAV server
 
-- **Node.js** ≥ 20 + **pnpm**
-- **Docker** (pour PostgreSQL)
-- **Ollama** avec un modèle vision (ex: `llama3.2-vision`) — ou une clé API cloud
+Everything runs on your own server. No data leaves your infrastructure unless you choose a cloud AI provider.
+
+---
+
+## Features
+
+- **AI-powered extraction** — works with a local model via [Ollama](https://ollama.com) (no internet required) or cloud providers (OpenAI, Anthropic, Google Gemini)
+- **CardDAV sync** — one-click sync to Nextcloud, Radicale, Baikal, or any standard CardDAV server; tags are exported as `CATEGORIES` in the vCard
+- **Tags** — create color-coded tags, filter your contact list, assign multiple tags per contact
+- **vCard export** — download any contact as a standard `.vcf` file
+- **Duplicate detection** — prevents saving contacts that already exist (matched by name, email, or phone)
+- **Magic link login** — no passwords; sign in via a link sent to your email
+- **Access control** — restrict sign-ups to specific email domains, or disable registration entirely
+- **Multi-language** — English and French interface, configurable via environment variable
+- **Self-hosted** — runs on any Linux server with Docker and Node.js
+
+---
+
+## Requirements
+
+Before installing, make sure you have:
+
+- **A Linux server** (or a machine that runs 24/7)
+- **Docker** — to run the PostgreSQL database
+- **Node.js 20+** and **pnpm** — to run the application
+- **An SMTP server** *(optional)* — to send magic link login emails. Without one, links are printed in the server console instead
+- **An AI provider** — either Ollama running locally, or an API key from OpenAI / Anthropic / Google
+
+---
 
 ## Installation
 
+### 1. Clone the repository
+
 ```bash
-# Cloner le dépôt
 git clone <repo-url>
 cd kardqntact
-
-# Installer les dépendances
-pnpm install
-
-# Configurer l'environnement
-cp .env.example .env
-# Éditer .env avec vos valeurs
 ```
 
-### Variables d'environnement requises
+### 2. Install dependencies
+
+```bash
+pnpm install
+```
+
+### 3. Configure environment variables
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and fill in the required values (see [Configuration](#configuration) below).
+
+### 4. Start the database
+
+```bash
+just up
+```
+
+This starts PostgreSQL via Docker and launches the development server.
+
+### 5. Apply database migrations
+
+```bash
+pnpm db:migrate
+```
+
+### 6. Open the app
+
+Go to [http://localhost:3000](http://localhost:3000) and sign in with your email. The first account created automatically becomes the administrator.
+
+---
+
+## Configuration
+
+All configuration is done through environment variables in your `.env` file.
+
+### Required
 
 | Variable | Description |
 |---|---|
-| `APP_URL` / `NEXT_PUBLIC_APP_URL` | URL de l'application |
-| `NEXT_PUBLIC_APP_NAME` | Nom affiché (défaut: `KardQntact`) |
-| `DATABASE_URL` | URL PostgreSQL |
-| `BETTER_AUTH_SECRET` | Clé secrète (`openssl rand -base64 32`) |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASSWORD` / `SMTP_FROM` | Config email pour magic links |
-| `VISION_PROVIDER` | Provider IA : `ollama` (défaut), `openai`, `anthropic`, `gemini` |
-| `OLLAMA_BASE_URL` | URL Ollama (défaut: `http://localhost:11434`) |
-| `OLLAMA_MODEL` | Modèle vision Ollama (défaut: `llama3.2-vision`) |
-| `OPENAI_API_KEY` | Clé API OpenAI (requis si `VISION_PROVIDER=openai`) |
-| `OPENAI_MODEL` | Modèle OpenAI (défaut: `gpt-4o`) |
-| `ANTHROPIC_API_KEY` | Clé API Anthropic (requis si `VISION_PROVIDER=anthropic`) |
-| `ANTHROPIC_MODEL` | Modèle Anthropic (défaut: `claude-3-5-sonnet-20241022`) |
-| `GEMINI_API_KEY` | Clé API Google Gemini (requis si `VISION_PROVIDER=gemini`) |
-| `GEMINI_MODEL` | Modèle Gemini (défaut: `gemini-1.5-flash`) |
+| `APP_URL` | The URL where your app is accessible (e.g. `https://cards.example.com`) |
+| `DATABASE_URL` | PostgreSQL connection string |
+| `BETTER_AUTH_SECRET` | Random secret key — generate with `openssl rand -base64 32` |
 
-### Domaines autorisés
+### SMTP (optional)
 
-L'inscription est restreinte aux domaines définis dans `config/restrictions.ts`. Modifiez `WHITELISTED_DOMAINS` pour autoriser vos domaines.
+KardQntact uses magic links to sign in. If SMTP is configured, the link is sent by email. **If not, the link is printed in the server logs** — useful for testing or self-hosted setups where you have direct console access.
 
-### Ollama (provider local)
+| Variable | Description |
+|---|---|
+| `SMTP_HOST` | SMTP server hostname |
+| `SMTP_PORT` | SMTP port (usually `587` or `465`) |
+| `SMTP_USER` | SMTP username |
+| `SMTP_PASSWORD` | SMTP password |
+| `SMTP_FROM` | Sender address (e.g. `KardQntact <no-reply@example.com>`) |
 
-Si vous utilisez `VISION_PROVIDER=ollama` (défaut), installez Ollama et téléchargez un modèle vision :
+### AI provider
+
+| Variable | Description | Default |
+|---|---|---|
+| `VISION_PROVIDER` | Which AI to use: `ollama`, `openai`, `anthropic`, or `gemini` | `ollama` |
+| `OLLAMA_BASE_URL` | Ollama server URL | `http://localhost:11434` |
+| `OLLAMA_MODEL` | Vision model name | `llama3.2-vision` |
+| `OPENAI_API_KEY` | Required if `VISION_PROVIDER=openai` | — |
+| `OPENAI_MODEL` | OpenAI model to use | `gpt-4o` |
+| `ANTHROPIC_API_KEY` | Required if `VISION_PROVIDER=anthropic` | — |
+| `ANTHROPIC_MODEL` | Anthropic model to use | `claude-3-5-sonnet-20241022` |
+| `GEMINI_API_KEY` | Required if `VISION_PROVIDER=gemini` | — |
+| `GEMINI_MODEL` | Gemini model to use | `gemini-1.5-flash` |
+
+### Optional
+
+| Variable | Description | Default |
+|---|---|---|
+| `LOCALE` | Interface language: `en` or `fr` | `en` |
+| `AUTH_WHITELISTED_DOMAINS` | Comma-separated list of allowed email domains (e.g. `company.com,partner.org`). Leave empty to allow any domain. | *(all allowed)* |
+| `AUTH_ALLOW_REGISTRATION` | Set to `false` to prevent new accounts from being created | `true` |
+| `AUTORIZED_DOMAINS` | Additional trusted origins for CORS (comma-separated URLs) | — |
+
+---
+
+## HTTPS and mobile access
+
+**The camera scanner requires HTTPS.** Browsers block access to the device camera on plain `http://` pages (except `localhost`). To use KardQntact on a phone or tablet, the app must be served over HTTPS with a valid certificate.
+
+### Using Traefik (recommended for self-hosting)
+
+[Traefik](https://traefik.io) is a reverse proxy that automatically provisions Let's Encrypt certificates. A minimal setup with Docker Compose:
+
+```yaml
+# docker-compose.yml
+services:
+  traefik:
+    image: traefik:v3
+    command:
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.le.acme.tlschallenge=true
+      - --certificatesresolvers.le.acme.email=you@example.com
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - letsencrypt:/letsencrypt
+
+  kardqntact:
+    image: kardqntact
+    labels:
+      - traefik.http.routers.kardqntact.rule=Host(`cards.example.com`)
+      - traefik.http.routers.kardqntact.tls.certresolver=le
+```
+
+### Alternatives
+
+- **Caddy** — also handles automatic certificates with minimal config
+- **nginx + Certbot** — more manual but widely documented
+- **Cloudflare Tunnel** — works behind NAT, no open ports required
+
+> For local development on desktop, `http://localhost:3000` works fine. The camera restriction only applies to real devices accessed over a network.
+
+---
+
+## Setting up an AI provider
+
+### Option A — Ollama (local, no internet required)
+
+Ollama runs AI models directly on your server. No API key needed, fully private.
 
 ```bash
-# Installer Ollama
+# Install Ollama
 curl -fsSL https://ollama.com/install.sh | sh
 
-# Télécharger le modèle vision (recommandé)
+# Download a vision model
 ollama pull llama3.2-vision
 
-# Vérifier qu'Ollama tourne
+# Make sure it's running
 ollama serve
 ```
 
-> Le modèle `llama3.2-vision` nécessite ~5 GB de RAM GPU. Alternative plus légère : `moondream` (~1.7 GB).
-
-## Lancement
-
-```bash
-# Démarrer PostgreSQL + serveur de dev
-just up
-
-# Appliquer les migrations
-pnpm db:migrate
-
-# Arrêter
-just down
+Set in `.env`:
+```
+VISION_PROVIDER=ollama
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2-vision
 ```
 
-L'application est disponible sur `http://localhost:3000`.
+> `llama3.2-vision` requires ~5 GB of GPU/RAM. For lower-spec machines, try `moondream` (~1.7 GB) or `minicpm-v`.
 
-## Commandes utiles
+### Option B — OpenAI
 
-```bash
-pnpm dev          # Serveur de dev seul (Docker doit tourner)
-pnpm build        # Build de production
-pnpm check        # Lint + format (Biome)
-pnpm db:generate  # Générer les migrations Drizzle
-pnpm db:migrate   # Appliquer les migrations
-pnpm email:dev    # Prévisualiser les emails
+```
+VISION_PROVIDER=openai
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4o
 ```
 
-## Stack technique
+### Option C — Anthropic
 
-- **Framework** — Next.js 16 (App Router)
-- **Base de données** — PostgreSQL + Drizzle ORM
-- **Auth** — Better Auth (magic links)
-- **IA** — Ollama (local) · OpenAI · Anthropic · Gemini (via `VISION_PROVIDER`)
-- **UI** — Tailwind CSS v4, shadcn/ui, Radix UI
-- **i18n** — next-intl (fr/en)
-- **Actions** — next-safe-action + TanStack Query
+```
+VISION_PROVIDER=anthropic
+ANTHROPIC_API_KEY=sk-ant-...
+ANTHROPIC_MODEL=claude-3-5-sonnet-20241022
+```
 
-## Providers IA supportés
+### Option D — Google Gemini
 
-| Provider | Variable | Modèle défaut |
-|---|---|---|
-| Ollama (local) | `VISION_PROVIDER=ollama` | `llama3.2-vision` |
-| OpenAI | `VISION_PROVIDER=openai` + `OPENAI_API_KEY` | `gpt-4o` |
-| Anthropic | `VISION_PROVIDER=anthropic` + `ANTHROPIC_API_KEY` | `claude-3-5-sonnet-20241022` |
-| Google Gemini | `VISION_PROVIDER=gemini` + `GEMINI_API_KEY` | `gemini-1.5-flash` |
+```
+VISION_PROVIDER=gemini
+GEMINI_API_KEY=...
+GEMINI_MODEL=gemini-1.5-flash
+```
 
-## Providers CardDAV supportés
+---
 
-| Provider | URL type |
+## Syncing to a CardDAV server
+
+CardDAV is the standard protocol used by contact apps (iOS Contacts, Android, Nextcloud, Thunderbird, etc.). KardQntact can push contacts directly to any CardDAV address book.
+
+### Supported servers
+
+| Server | URL format |
 |---|---|
-| Radicale | `http://host:5232/user/contacts/` |
-| Baikal | `http://host/baikal/dav.php/addressbooks/user/default/` |
-| Nextcloud | `https://nextcloud.example.com/remote.php/dav/addressbooks/users/username/contacts/` |
-| Personnalisé | Toute URL CardDAV standard |
+| **Nextcloud** | `https://nextcloud.example.com/remote.php/dav/addressbooks/users/USERNAME/contacts/` |
+| **Radicale** | `http://host:5232/USERNAME/contacts/` |
+| **Baikal** | `http://host/baikal/dav.php/addressbooks/USERNAME/default/` |
+| **Custom** | Any valid CardDAV address book URL |
+
+### How to add a provider
+
+1. Open the **Contacts** tab in the app
+2. Click the settings icon (⚙) next to the search bar
+3. Click **Add provider**, choose your server type and fill in the URL, username, and password
+4. Click **Test connection** to verify
+5. Save — the provider is now available when syncing contacts
+
+You can add multiple providers and choose which one to use per contact when syncing.
+
+### Tags and CardDAV
+
+When syncing, tags assigned to a contact are exported as the `CATEGORIES` field in the vCard. This is the standard way to carry labels across contact applications.
+
+---
+
+## Access control
+
+### Restricting sign-ups by email domain
+
+If you only want people from specific organizations to access KardQntact, set:
+
+```
+AUTH_WHITELISTED_DOMAINS=yourcompany.com,partner.org
+```
+
+Anyone trying to sign in with an email outside those domains will be rejected — whether they're a new user or an existing one.
+
+Leave the variable empty (default) to allow any email address.
+
+### Disabling registration entirely
+
+Once your team is set up, you can prevent any new accounts from being created:
+
+```
+AUTH_ALLOW_REGISTRATION=false
+```
+
+Existing users can still sign in normally. Only new registrations are blocked.
+
+---
+
+## Useful commands
+
+```bash
+just up           # Start Docker (PostgreSQL) + dev server
+just down         # Stop Docker services
+pnpm dev          # Dev server only (Docker must already be running)
+pnpm build        # Production build
+pnpm check        # Lint + format (Biome)
+pnpm db:generate  # Generate Drizzle migration files
+pnpm db:migrate   # Apply pending migrations
+pnpm email:dev    # Preview email templates
+```
+
+---
+
+## Contributing
+
+Contributions are welcome. Here's how to get started:
+
+### Setup
+
+Follow the [Installation](#installation) steps above. The development server includes hot reload — changes are reflected immediately.
+
+### Stack
+
+- **Framework** — Next.js (App Router)
+- **Database** — PostgreSQL + Drizzle ORM
+- **Auth** — Better Auth (magic links)
+- **AI** — Ollama · OpenAI · Anthropic · Gemini (abstracted via `src/lib/vision/`)
+- **UI** — Tailwind CSS v4, Base UI
+- **i18n** — next-intl (`fr` / `en`)
+- **Forms / mutations** — next-safe-action + TanStack Query
+
+### Project structure
+
+```
+app/              Next.js routes
+config/           App-wide configuration (auth, i18n, CardDAV URLs…)
+db/               Drizzle schema + migrations
+src/
+  features/       Business logic by domain (scanner, contacts, tags, providers…)
+  lib/            Shared utilities (CardDAV client, vision providers, vCard…)
+```
+
+### Guidelines
+
+- Run `pnpm check` before submitting — the project uses [Biome](https://biomejs.dev) for linting and formatting
+- Translations live in `src/features/[feature]/translations/fr.json` and `en.json` — add keys for both locales
+- Server actions use `anyAuthenticatedAction` or `adminAction` from `src/lib/actions.ts` — pick the right one
+- Keep PRs focused; one feature or fix per pull request
+
+### Reporting issues
+
+Open an issue with a clear description of the problem, steps to reproduce, and your environment (OS, Node version, AI provider used).
+
+---
+
+## License
+
+MIT

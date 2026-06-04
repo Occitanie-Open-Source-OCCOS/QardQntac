@@ -1,0 +1,110 @@
+<h2>Header & navigation</h2>
+<p class="subtitle">Comment naviguer entre Scanner / Contacts + où mettre le sign-out ?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="tabs" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:12px;background:#f8f8f8;border-radius:8px;">
+      <div style="background:white;border-radius:8px;border:1px solid #e2e8f0;overflow:hidden;">
+        <!-- Header avec tabs -->
+        <div style="padding:10px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;gap:0;">
+            <div style="padding:5px 12px;background:#6366f1;color:white;border-radius:6px 0 0 6px;font-size:10px;font-weight:600;">📷 Scanner</div>
+            <div style="padding:5px 12px;background:#f1f5f9;color:#888;border-radius:0 6px 6px 0;font-size:10px;border:1px solid #e2e8f0;border-left:none;">📇 Contacts <span style="background:#6366f1;color:white;border-radius:10px;padding:1px 5px;font-size:8px;">12</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:24px;height:24px;border-radius:50%;background:#6366f1;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;">TL</div>
+          </div>
+        </div>
+        <!-- Dropdown user -->
+        <div style="position:relative;">
+          <div style="position:absolute;right:10px;top:2px;background:white;border:1px solid #e2e8f0;border-radius:8px;padding:6px;width:120px;box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:10;">
+            <div style="font-size:9px;color:#888;padding:2px 6px;margin-bottom:2px;">theo@soluce.fr</div>
+            <div style="font-size:9px;padding:4px 6px;border-radius:4px;background:#fee2e2;color:#dc2626;cursor:pointer;">🚪 Se déconnecter</div>
+          </div>
+        </div>
+        <!-- Content preview -->
+        <div style="padding:10px;height:70px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:10px;">
+          contenu scanner…
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Tabs + avatar menu</h3>
+      <p>Toggle scanner/contacts en haut. Avatar cliquable → dropdown avec email + "Se déconnecter". Compact.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="topnav" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:12px;background:#f8f8f8;border-radius:8px;">
+      <div style="background:white;border-radius:8px;border:1px solid #e2e8f0;overflow:hidden;">
+        <!-- Top nav bar -->
+        <div style="padding:8px 12px;background:#1e1b4b;display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:11px;font-weight:700;color:white;">Kardqntact</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div style="font-size:9px;color:#a5b4fc;padding:3px 8px;border-radius:4px;">📷 Scanner</div>
+            <div style="font-size:9px;color:white;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,0.15);">📇 Contacts</div>
+            <div style="font-size:9px;color:#fca5a5;padding:3px 8px;border-radius:4px;border:1px solid rgba(252,165,165,0.3);cursor:pointer;">Déco</div>
+          </div>
+        </div>
+        <!-- Content -->
+        <div style="padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:#f8f8f8;border-radius:6px;border:1px solid #e2e8f0;padding:8px;text-align:center;">
+            <div style="width:28px;height:28px;border-radius:50%;background:#6366f1;color:white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold;margin:0 auto 4px;">TL</div>
+            <div style="font-size:9px;font-weight:600;">Théo L.</div>
+            <div style="font-size:8px;color:#888;">Soluce</div>
+          </div>
+          <div style="background:#f8f8f8;border-radius:6px;border:1px solid #e2e8f0;padding:8px;text-align:center;">
+            <div style="width:28px;height:28px;border-radius:50%;background:#10b981;color:white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold;margin:0 auto 4px;">MA</div>
+            <div style="font-size:9px;font-weight:600;">Marie A.</div>
+            <div style="font-size:8px;color:#10b981;">✅ sync</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Navbar full + bouton déco</h3>
+      <p>Barre de nav avec logo, liens Scanner/Contacts, et bouton "Déconnecter" visible. Plus explicite, plus d'espace vertical utilisé.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="bottomnav" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:12px;background:#f8f8f8;border-radius:8px;">
+      <div style="background:white;border-radius:8px;border:1px solid #e2e8f0;overflow:hidden;position:relative;">
+        <!-- Content -->
+        <div style="padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;min-height:100px;">
+          <div style="background:#f8f8f8;border-radius:6px;border:1px solid #e2e8f0;padding:8px;text-align:center;">
+            <div style="width:28px;height:28px;border-radius:50%;background:#6366f1;color:white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold;margin:0 auto 4px;">TL</div>
+            <div style="font-size:9px;font-weight:600;">Théo L.</div>
+            <div style="font-size:8px;color:#888;">Soluce</div>
+          </div>
+          <div style="background:#f8f8f8;border-radius:6px;border:1px solid #e2e8f0;padding:8px;text-align:center;">
+            <div style="width:28px;height:28px;border-radius:50%;background:#10b981;color:white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold;margin:0 auto 4px;">MA</div>
+            <div style="font-size:9px;font-weight:600;">Marie A.</div>
+            <div style="font-size:8px;color:#10b981;">✅ sync</div>
+          </div>
+        </div>
+        <!-- Bottom nav -->
+        <div style="border-top:1px solid #e2e8f0;padding:6px 12px;display:flex;justify-content:space-around;align-items:center;background:white;">
+          <div style="text-align:center;color:#888;">
+            <div style="font-size:14px;">📷</div>
+            <div style="font-size:8px;">Scanner</div>
+          </div>
+          <div style="text-align:center;color:#6366f1;">
+            <div style="font-size:14px;">📇</div>
+            <div style="font-size:8px;font-weight:600;">Contacts</div>
+          </div>
+          <div style="text-align:center;color:#ef4444;">
+            <div style="font-size:14px;">🚪</div>
+            <div style="font-size:8px;">Déco</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Tab bar bas (mobile-first)</h3>
+      <p>Navigation en bas à la iOS. Scanner / Contacts / Déco. Idéal pour mobile, naturel au pouce.</p>
+    </div>
+  </div>
+
+</div>

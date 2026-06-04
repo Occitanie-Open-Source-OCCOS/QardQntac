@@ -4,7 +4,7 @@ import { env } from "@/env";
 
 export const routing = defineRouting({
 	locales: ["fr", "en"],
-	defaultLocale: (env.APP_LOCALE as "fr" | "en") || "fr",
+	defaultLocale: env.LOCALE,
 	localePrefix: "never",
 });
 

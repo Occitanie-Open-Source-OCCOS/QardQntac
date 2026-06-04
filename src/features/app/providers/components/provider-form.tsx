@@ -100,27 +100,56 @@ export function ProviderForm({ initial, onSaved, onCancel }: ProviderFormProps) 
 
 			<div className="flex flex-col gap-1">
 				<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("label")}</label>
-				<Input type="text" value={label} onChange={(e) => setLabel(e.target.value)} placeholder={meta.name} className="bg-background h-10 px-3 py-2 text-sm" />
+				<Input
+					type="text"
+					value={label}
+					onChange={(e) => setLabel(e.target.value)}
+					placeholder={meta.name}
+					className="bg-background h-10 px-3 py-2 text-sm"
+				/>
 			</div>
 
 			<div className="flex flex-col gap-1">
 				<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">URL</label>
-				<Input type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder={meta.urlPlaceholder} className="bg-background h-10 px-3 py-2 text-sm" />
+				<Input
+					type="url"
+					value={url}
+					onChange={(e) => setUrl(e.target.value)}
+					placeholder={meta.urlPlaceholder}
+					className="bg-background h-10 px-3 py-2 text-sm"
+				/>
 				<p className="text-xs text-muted-foreground">{meta.urlHint}</p>
 			</div>
 
 			<div className="flex flex-col gap-1">
 				<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("username")}</label>
-				<Input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="bg-background h-10 px-3 py-2 text-sm" />
+				<Input
+					type="text"
+					value={username}
+					onChange={(e) => setUsername(e.target.value)}
+					className="bg-background h-10 px-3 py-2 text-sm"
+				/>
 			</div>
 
 			<div className="flex flex-col gap-1">
 				<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("password")}</label>
-				<Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={initial ? "••••••••" : ""} className="bg-background h-10 px-3 py-2 text-sm" />
+				<Input
+					type="password"
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
+					placeholder={initial ? "••••••••" : ""}
+					className="bg-background h-10 px-3 py-2 text-sm"
+				/>
 			</div>
 
 			<div className="flex flex-col md:flex-row gap-2 mt-1">
-				<Button type="button" variant="outline" size="sm" disabled={!canTest || isTesting} onClick={() => execTest({ type: providerType, url, username, password })}>
+				<Button
+					type="button"
+					variant="outline"
+					size="sm"
+					disabled={!canTest || isTesting}
+					onClick={() => execTest({ type: providerType, url, username, password })}
+				>
 					{isTesting ? "…" : t("test_btn")}
 				</Button>
 				<Button type="button" variant="ghost" size="sm" onClick={onCancel}>

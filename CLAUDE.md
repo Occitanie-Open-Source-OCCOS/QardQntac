@@ -90,7 +90,7 @@ Biome handles linting and formatting. JS/TS uses **tabs** for indentation, 120-c
 ## Environment Variables
 
 Required variables (see `env.ts` for full schema with validation):
-- `APP_URL`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_APP_NAME`
+- `APP_URL`, `NEXT_PUBLIC_APP_URL`
 - `DATABASE_URL`
 - `BETTER_AUTH_SECRET` — generate with `openssl rand -base64 32`
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`

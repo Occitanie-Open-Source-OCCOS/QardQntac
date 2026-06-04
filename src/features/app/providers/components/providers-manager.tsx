@@ -63,7 +63,13 @@ export function ProvidersManager({ providers, onMutated }: ProvidersManagerProps
 					<Button size="icon-xs" variant="ghost" onClick={() => setEditingId(p.id)} title={t("edit")}>
 						<PencilIcon className="size-3.5" />
 					</Button>
-					<Button size="icon-xs" variant="ghost" className="text-red-500 hover:text-red-600" onClick={() => execDelete({ id: p.id })} title={t("delete")}>
+					<Button
+						size="icon-xs"
+						variant="ghost"
+						className="text-red-500 hover:text-red-600"
+						onClick={() => execDelete({ id: p.id })}
+						title={t("delete")}
+					>
 						<Trash2Icon className="size-3.5" />
 					</Button>
 				</div>
