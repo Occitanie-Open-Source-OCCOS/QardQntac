@@ -9,13 +9,14 @@ export default getRequestConfig(async ({ requestLocale }) => {
 	const requestedLocale = await requestLocale;
 	const locale = requestedLocale && isValidLocale(requestedLocale) ? requestedLocale : routing.defaultLocale;
 
-	const dirs = ["emails", "auth", "scanner", "contacts", "providers", "app"];
+	const dirs = ["emails", "auth", "scanner", "contacts", "providers", "app", "tags"];
 
 	const pathMap: Record<string, string> = {
 		scanner: "app/scanner",
 		contacts: "app/contacts",
 		providers: "app/providers",
 		app: "app/layouts",
+		tags: "app/tags",
 	};
 
 	const messages = Object.fromEntries(

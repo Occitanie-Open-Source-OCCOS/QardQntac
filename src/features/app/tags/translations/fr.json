@@ -1,0 +1,16 @@
+{
+	"all": "Tous",
+	"new_tag": "Nouveau tag…",
+	"name_placeholder": "Nom du tag",
+	"create": "Créer",
+	"rename": "Renommer",
+	"delete": "Supprimer",
+	"assign_tags": "Tags",
+	"no_tags": "Aucun tag",
+	"no_tag_results": "Aucun contact pour ces tags",
+	"delete_confirm": "Supprimer ce tag de tous les contacts ?",
+	"created_toast": "Tag créé",
+	"deleted_toast": "Tag supprimé",
+	"updated_toast": "Tag mis à jour",
+	"tag_label": "Tags"
+}
