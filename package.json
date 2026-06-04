@@ -6,7 +6,7 @@
   "packageManager": "pnpm@11.0.8",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --experimental-https --hostname 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "biome lint .",
@@ -61,6 +61,7 @@
     "@tanstack/react-form": "^1.32.1",
     "@tanstack/react-form-nextjs": "^1.32.1",
     "@tanstack/react-query": "^5.100.14",
+    "@tanstack/react-table": "^8.21.3",
     "@types/canvas-confetti": "^1.9.0",
     "@types/nodemailer": "^8.0.0",
     "better-auth": "^1.6.11",
