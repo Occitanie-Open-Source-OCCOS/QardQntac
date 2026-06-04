@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ProviderSummary } from "@/db/schemas/contacts";
 import type { ProviderType } from "@/lib/carddav";
-import { saveProvider } from "../actions/save-provider.action";
-import { testProviderConnection } from "../actions/test-provider-connection.action";
+import { saveProvider } from "@/features/app/providers/actions/save-provider.action";
+import { testProviderConnection } from "@/features/app/providers/actions/test-provider-connection.action";
 
 const PROVIDER_META: Record<ProviderType, { name: string; urlPlaceholder: string; urlHint: string }> = {
 	radicale: {

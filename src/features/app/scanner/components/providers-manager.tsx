@@ -7,7 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { ProviderSummary } from "@/db/schemas/contacts";
-import { deleteProvider } from "../actions/delete-provider.action";
+import { deleteProvider } from "@/features/app/providers/actions/delete-provider.action";
 import { ProviderForm } from "./provider-form";
 
 interface ProvidersManagerProps {
