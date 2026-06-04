@@ -1,5 +1,6 @@
-import { ScannerWizard } from "@/features/app/scanner/components/scanner-wizard";
+// app/(app)/app/page.tsx
+import { AppTabs } from "@/features/app/layouts/app-tabs";
 
 export default async function App() {
-	return <ScannerWizard />;
+	return <AppTabs />;
 }

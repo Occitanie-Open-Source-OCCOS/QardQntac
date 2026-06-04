@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { ContactData } from "@/lib/types";
-import { ContactsDrawer } from "./contacts-drawer";
 import { CaptureStep } from "./steps/capture-step";
 import { ProcessingStep } from "./steps/processing-step";
 import { ReviewStep } from "./steps/review-step";
@@ -42,9 +41,7 @@ export function ScannerWizard() {
 	};
 
 	return (
-		<div className="relative min-h-[calc(100vh-4rem)]">
-			<ContactsDrawer />
-
+		<div>
 			{step === "capture" && <CaptureStep onImageSelected={handleImageSelected} />}
 
 			{step === "processing" && selectedFile && (

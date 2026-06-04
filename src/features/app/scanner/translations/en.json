@@ -27,48 +27,7 @@
     "retry_btn": "Try again",
     "saved_toast": "Contact saved"
   },
-  "drawer": {
-    "title": "My contacts",
-    "empty": "No contacts scanned yet",
-    "download_vcf": "Download vCard",
-    "sync_radicale": "Sync Radicale",
-    "delete": "Delete",
-    "synced_label": "Synced",
-    "configure_carddav": "Configure Radicale",
-    "carddav_not_configured": "CardDAV not configured"
-  },
-  "carddav": {
-    "title": "Radicale server",
-    "url": "Server URL",
-    "url_placeholder": "http://radicale:5232/user/contacts/",
-    "username": "Username",
-    "password": "Password",
-    "save_btn": "Save",
-    "saved_toast": "Configuration saved"
-  },
-  "providers": {
-    "title": "My providers",
-    "add_btn": "Add a provider",
-    "edit": "Edit",
-    "delete": "Delete",
-    "label": "Name",
-    "username": "Username",
-    "password": "Password",
-    "test_btn": "Test connection",
-    "test_success": "Connection successful",
-    "test_failed": "Connection failed",
-    "save_btn": "Save",
-    "cancel_btn": "Cancel",
-    "saved_toast": "Provider saved",
-    "deleted_toast": "Provider deleted",
-    "pick_provider": "Choose a provider",
-    "no_providers": "No providers configured"
-  },
   "errors": {
-    "ollama_down": "Ollama unavailable — check it's running",
-    "sync_failed": "Sync failed",
-    "delete_failed": "Delete failed",
-    "carddav_not_configured": "Configure your Radicale server first",
-    "no_providers_configured": "Configure a provider first"
+    "ollama_down": "Ollama unavailable — check it's running"
   }
 }

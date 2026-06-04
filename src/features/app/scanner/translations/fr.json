@@ -27,48 +27,7 @@
     "retry_btn": "Recommencer",
     "saved_toast": "Contact sauvegardé"
   },
-  "drawer": {
-    "title": "Mes contacts",
-    "empty": "Aucun contact scanné",
-    "download_vcf": "Télécharger vCard",
-    "sync_radicale": "Sync Radicale",
-    "delete": "Supprimer",
-    "synced_label": "Synchronisé",
-    "configure_carddav": "Configurer Radicale",
-    "carddav_not_configured": "CardDAV non configuré"
-  },
-  "carddav": {
-    "title": "Serveur Radicale",
-    "url": "URL du serveur",
-    "url_placeholder": "http://radicale:5232/user/contacts/",
-    "username": "Identifiant",
-    "password": "Mot de passe",
-    "save_btn": "Enregistrer",
-    "saved_toast": "Configuration sauvegardée"
-  },
-  "providers": {
-    "title": "Mes connecteurs",
-    "add_btn": "Ajouter un connecteur",
-    "edit": "Modifier",
-    "delete": "Supprimer",
-    "label": "Nom",
-    "username": "Identifiant",
-    "password": "Mot de passe",
-    "test_btn": "Tester la connexion",
-    "test_success": "Connexion réussie",
-    "test_failed": "Connexion échouée",
-    "save_btn": "Enregistrer",
-    "cancel_btn": "Annuler",
-    "saved_toast": "Provider enregistré",
-    "deleted_toast": "Provider supprimé",
-    "pick_provider": "Choisir un provider",
-    "no_providers": "Aucun provider configuré"
-  },
   "errors": {
-    "ollama_down": "Ollama indisponible — vérifiez qu'il tourne",
-    "sync_failed": "Échec de la synchronisation",
-    "delete_failed": "Échec de la suppression",
-    "carddav_not_configured": "Configurez d'abord votre serveur Radicale",
-    "no_providers_configured": "Configurez d'abord un provider"
+    "ollama_down": "Ollama indisponible — vérifiez qu'il tourne"
   }
 }
