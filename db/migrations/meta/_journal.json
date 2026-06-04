@@ -15,6 +15,13 @@
       "when": 1780059606597,
       "tag": "0001_carddav_provider_connector",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780579763325,
+      "tag": "0002_faithful_tyrannus",
+      "breakpoints": true
     }
   ]
 }

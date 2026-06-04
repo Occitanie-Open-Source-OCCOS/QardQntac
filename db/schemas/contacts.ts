@@ -1,4 +1,5 @@
-import { pgTable, serial, text, timestamp, uuid } from "drizzle-orm/pg-core";
+// db/schemas/contacts.ts
+import { integer, pgTable, primaryKey, serial, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 
 export const userCardDavProviders = pgTable("user_carddav_providers", {
 	id: uuid("id").primaryKey().defaultRandom(),
@@ -30,8 +31,37 @@ export const contacts = pgTable("contacts", {
 	updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const tags = pgTable(
+	"tags",
+	{
+		id: uuid("id").primaryKey().defaultRandom(),
+		userId: text("user_id").notNull(),
+		name: text("name").notNull(),
+		color: text("color").notNull(),
+		createdAt: timestamp("created_at").notNull().defaultNow(),
+		updatedAt: timestamp("updated_at").notNull().defaultNow(),
+	},
+	(t) => [unique("tags_user_name_unique").on(t.userId, t.name)],
+);
+
+export const contactTags = pgTable(
+	"contact_tags",
+	{
+		contactId: integer("contact_id")
+			.notNull()
+			.references(() => contacts.id, { onDelete: "cascade" }),
+		tagId: uuid("tag_id")
+			.notNull()
+			.references(() => tags.id, { onDelete: "cascade" }),
+	},
+	(t) => [primaryKey({ columns: [t.contactId, t.tagId] })],
+);
+
 export type Contact = typeof contacts.$inferSelect;
 export type NewContact = typeof contacts.$inferInsert;
 export type UserCardDavProvider = typeof userCardDavProviders.$inferSelect;
 export type NewUserCardDavProvider = typeof userCardDavProviders.$inferInsert;
 export type ProviderSummary = Omit<UserCardDavProvider, "password">;
+export type Tag = typeof tags.$inferSelect;
+export type NewTag = typeof tags.$inferInsert;
+export type ContactTag = typeof contactTags.$inferSelect;
