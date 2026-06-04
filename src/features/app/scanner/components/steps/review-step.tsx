@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
@@ -28,9 +29,11 @@ const FIELDS = [
 
 export function ReviewStep({ imageUrl, data, onSave, onRetry }: ReviewStepProps) {
 	const t = useTranslations("scanner.review");
+	const queryClient = useQueryClient();
 	const [formData, setFormData] = useState<ContactData>(data);
 	const { execute, isPending } = useAction(saveContact, {
 		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["contacts"] });
 			toast.success(t("saved_toast"));
 			onSave();
 		},
