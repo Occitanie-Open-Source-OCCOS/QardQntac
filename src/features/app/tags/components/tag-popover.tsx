@@ -51,7 +51,6 @@ export function TagPopover({ contactId, assignedTagIds, allTags, onMutated }: Ta
 			setShowCreate(false);
 			setNewName("");
 			setNewColor(PALETTE[0]);
-			onMutated();
 		},
 		onError: ({ error }) => toast.error(error.serverError ?? "Erreur"),
 	});
@@ -111,7 +110,7 @@ export function TagPopover({ contactId, assignedTagIds, allTags, onMutated }: Ta
 								/>
 								<button
 									type="button"
-									onClick={() => execUpdate({ id: tag.id, name: editName })}
+									onClick={() => editName.trim() && execUpdate({ id: tag.id, name: editName.trim() })}
 									className="p-1 text-green-600 hover:bg-green-50 rounded"
 								>
 									<CheckIcon className="size-3" />
