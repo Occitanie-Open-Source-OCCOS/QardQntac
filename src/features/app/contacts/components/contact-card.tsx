@@ -7,7 +7,8 @@ import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import type { Contact, ProviderSummary } from "@/db/schemas/contacts";
+import type { Contact, ProviderSummary, Tag } from "@/db/schemas/contacts";
+import { TagPopover } from "@/features/app/tags/components/tag-popover";
 import { downloadVCard } from "@/lib/vcf";
 import { deleteContact } from "../actions/delete-contact.action";
 import { syncContact } from "../actions/sync-contact.action";
@@ -29,10 +30,12 @@ function getAvatarColor(name: string): string {
 interface ContactCardProps {
 	contact: Contact;
 	providers: ProviderSummary[];
+	allTags: Tag[];
+	assignedTagIds: string[];
 	onMutated: () => void;
 }
 
-export function ContactCard({ contact, providers, onMutated }: ContactCardProps) {
+export function ContactCard({ contact, providers, allTags, assignedTagIds, onMutated }: ContactCardProps) {
 	const t = useTranslations("contacts.card");
 	const tErrors = useTranslations("contacts.errors");
 	const tProviders = useTranslations("providers");
@@ -76,6 +79,9 @@ export function ContactCard({ contact, providers, onMutated }: ContactCardProps)
 	const avatarColor = getAvatarColor(contact.name || "?");
 	const syncedProvider = providers.find((p) => p.id === contact.providerId);
 	const subtitle = contact.company || contact.email || "";
+	const assignedTags = allTags.filter((tag) => assignedTagIds.includes(tag.id));
+	const visibleTags = assignedTags.slice(0, 3);
+	const extraCount = assignedTags.length - visibleTags.length;
 
 	return (
 		<div className="bg-card border border-border rounded-xl p-3 flex flex-col items-center gap-2 text-center">
@@ -91,9 +97,27 @@ export function ContactCard({ contact, providers, onMutated }: ContactCardProps)
 						✓ {t("synced_label")} · {syncedProvider.label}
 					</p>
 				)}
+				{visibleTags.length > 0 && (
+					<div className="flex flex-wrap gap-1 justify-center mt-1">
+						{visibleTags.map((tag) => (
+							<span
+								key={tag.id}
+								className="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
+								style={{ backgroundColor: `${tag.color}22`, color: tag.color, border: `1px solid ${tag.color}44` }}
+							>
+								{tag.name}
+							</span>
+						))}
+						{extraCount > 0 && (
+							<span className="px-1.5 py-0.5 rounded-full text-[10px] text-muted-foreground bg-muted">
+								+{extraCount}
+							</span>
+						)}
+					</div>
+				)}
 			</div>
 
-			<div className="flex gap-1">
+			<div className="flex gap-1 items-center">
 				<Button size="icon-xs" variant="ghost" onClick={() => downloadVCard(contact)} title={t("download_vcf")}>
 					<DownloadIcon className="size-3.5" />
 				</Button>
@@ -110,6 +134,12 @@ export function ContactCard({ contact, providers, onMutated }: ContactCardProps)
 				>
 					<Trash2Icon className="size-3.5" />
 				</Button>
+				<TagPopover
+					contactId={contact.id}
+					assignedTagIds={assignedTagIds}
+					allTags={allTags}
+					onMutated={onMutated}
+				/>
 			</div>
 
 			{showPicker && (
