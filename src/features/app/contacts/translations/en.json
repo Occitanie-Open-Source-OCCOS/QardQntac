@@ -1,0 +1,19 @@
+{
+  "grid": {
+    "search_placeholder": "Search…",
+    "empty": "No contacts scanned yet",
+    "no_results": "No results for \"{query}\"",
+    "configure_providers": "Configure providers"
+  },
+  "card": {
+    "download_vcf": "Download vCard",
+    "sync": "Sync",
+    "delete": "Delete",
+    "synced_label": "Synced"
+  },
+  "errors": {
+    "sync_failed": "Sync failed",
+    "delete_failed": "Delete failed",
+    "no_providers_configured": "Configure a provider first"
+  }
+}

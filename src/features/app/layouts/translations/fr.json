@@ -1,0 +1,9 @@
+{
+  "tabs": {
+    "scanner": "Scanner",
+    "contacts": "Contacts"
+  },
+  "header": {
+    "sign_out": "Se déconnecter"
+  }
+}

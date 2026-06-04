@@ -1,0 +1,19 @@
+{
+  "grid": {
+    "search_placeholder": "Rechercher…",
+    "empty": "Aucun contact scanné",
+    "no_results": "Aucun résultat pour « {query} »",
+    "configure_providers": "Configurer les providers"
+  },
+  "card": {
+    "download_vcf": "Télécharger vCard",
+    "sync": "Synchroniser",
+    "delete": "Supprimer",
+    "synced_label": "Synchronisé"
+  },
+  "errors": {
+    "sync_failed": "Échec de la synchronisation",
+    "delete_failed": "Échec de la suppression",
+    "no_providers_configured": "Configurez d'abord un provider"
+  }
+}
