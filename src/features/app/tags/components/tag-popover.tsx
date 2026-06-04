@@ -37,7 +37,7 @@ export function TagPopover({ contactId, assignedTagIds, allTags, onMutated }: Ta
 	const [newName, setNewName] = useState("");
 	const [newColor, setNewColor] = useState(PALETTE[0]);
 
-	const { execute: execAssign } = useAction(assignTags, {
+	const { execute: execAssign, isPending: isAssigning } = useAction(assignTags, {
 		onSuccess: onMutated,
 		onError: ({ error }) => toast.error(error.serverError ?? "Erreur"),
 	});
@@ -128,7 +128,8 @@ export function TagPopover({ contactId, assignedTagIds, allTags, onMutated }: Ta
 								<button
 									type="button"
 									onClick={() => toggleAssign(tag.id)}
-									className="flex items-center gap-1.5 flex-1 text-left"
+									disabled={isAssigning}
+									className="flex items-center gap-1.5 flex-1 text-left disabled:opacity-50"
 								>
 									<span
 										className="size-3 rounded-full shrink-0 border border-black/10"
