@@ -8,7 +8,10 @@
     "camera_denied": "Camera denied — use gallery",
     "capture_btn": "Capture",
     "retake_btn": "Retake",
-    "preview_alt": "Business card preview"
+    "preview_alt": "Business card preview",
+    "card_detected": "Card detected",
+    "not_a_card": "Not recognized as a business card",
+    "validation_error": "Unable to validate image"
   },
   "processing": {
     "title": "Analyzing…",
@@ -25,7 +28,28 @@
     "address": "Address",
     "save_btn": "Save",
     "retry_btn": "Try again",
-    "saved_toast": "Contact saved"
+    "saved_toast": "Contact saved",
+    "save_error": "Error while saving"
+  },
+  "providers": {
+    "title": "My providers",
+    "add_btn": "Add a provider",
+    "edit": "Edit",
+    "delete": "Delete",
+    "label": "Name",
+    "username": "Username",
+    "password": "Password",
+    "test_btn": "Test connection",
+    "test_success": "Connection successful",
+    "test_failed": "Connection failed",
+    "save_btn": "Save",
+    "cancel_btn": "Cancel",
+    "saved_toast": "Provider saved",
+    "deleted_toast": "Provider deleted",
+    "pick_provider": "Choose a provider",
+    "no_providers": "No providers configured",
+    "error_generic": "Error",
+    "error_network": "Network error"
   },
   "errors": {
     "ollama_down": "Ollama unavailable — check it's running"

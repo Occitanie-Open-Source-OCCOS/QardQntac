@@ -8,7 +8,10 @@
     "camera_denied": "Caméra refusée — utilisez la galerie",
     "capture_btn": "Capturer",
     "retake_btn": "Reprendre",
-    "preview_alt": "Aperçu de la carte de visite"
+    "preview_alt": "Aperçu de la carte de visite",
+    "card_detected": "Carte détectée",
+    "not_a_card": "Image non reconnue comme carte de visite",
+    "validation_error": "Impossible de valider l'image"
   },
   "processing": {
     "title": "Analyse en cours…",
@@ -25,7 +28,28 @@
     "address": "Adresse",
     "save_btn": "Sauvegarder",
     "retry_btn": "Recommencer",
-    "saved_toast": "Contact sauvegardé"
+    "saved_toast": "Contact sauvegardé",
+    "save_error": "Erreur lors de la sauvegarde"
+  },
+  "providers": {
+    "title": "Mes connecteurs",
+    "add_btn": "Ajouter un connecteur",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "label": "Nom",
+    "username": "Identifiant",
+    "password": "Mot de passe",
+    "test_btn": "Tester la connexion",
+    "test_success": "Connexion réussie",
+    "test_failed": "Connexion échouée",
+    "save_btn": "Enregistrer",
+    "cancel_btn": "Annuler",
+    "saved_toast": "Provider enregistré",
+    "deleted_toast": "Provider supprimé",
+    "pick_provider": "Choisir un provider",
+    "no_providers": "Aucun provider configuré",
+    "error_generic": "Erreur",
+    "error_network": "Erreur réseau"
   },
   "errors": {
     "ollama_down": "Ollama indisponible — vérifiez qu'il tourne"
