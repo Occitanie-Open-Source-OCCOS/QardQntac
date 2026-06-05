@@ -1,27 +1,16 @@
-name: kardqntact-production
+name: qardqntac-production
 
 services:
   app:
-    container_name: kardqntact-production-app
-    image: registry.gitlab.soluce-technologies.com/internal/soluce/kardqntact/app:${IMAGE_TAG:-latest}
-    restart: always
-    expose:
-      - 80
+    container_name: qardqntac-production-app
+    image: occos/qardqntac:latest
+    restart: unless-stopped
     depends_on:
-      - db
-    networks:
-      - default
-      - traefik
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.app-kardqntact-production.entrypoints=web,websecure"
-      - "traefik.http.routers.app-kardqntact-production.rule=Host(`kardqntact.st-infra.dev`)"
-      - "traefik.http.services.app-kardqntact-production.loadbalancer.server.port=80"
-    volumes:
-      - kardqntact_uploads_data:/app/public/uploads
+      db:
+        condition: service_healthy
   db:
     image: postgres:16-alpine
-    container_name: kardqntact-db-dev
+    container_name: qardqntac-production-db
     ports:
       - "5432:5432"
     environment:
@@ -29,16 +18,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
       POSTGRES_DB: ${POSTGRES_DB:-db}
     volumes:
-      - kardqntact_postgres_data:/var/lib/postgresql/data
+      - qardqntac_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d db"]
       interval: 5s
       timeout: 5s
       retries: 5
-networks:
-  traefik:
-    name: traefik_network
-    external: true
+
 volumes:
-  kardqntact_postgres_data:
-  kardqntact_uploads_data:
+  qardqntac_postgres_data:
