@@ -30,66 +30,73 @@ pnpm ba:migrate   # Apply Better Auth migrations
 Next.js App Router with four route groups:
 - `(guest)` — Public pages: landing (homepage at `/`), legal pages, OG image generation, email unsubscribe
 - `(auth)` — Auth portal at `/portal` (magic link sign-in)
-- `(app)` — Protected dashboard at `/app/admin` (admin users) and `/app/member` (regular users)
+- `(app)` — Protected dashboard at `/app`
 - `(api)` — API routes, including the Better Auth handler at `/api/auth/[...all]`
 
 ### Feature Structure (`src/features/`)
 
-Business logic is organized into features. Each feature typically contains:
-- `components/` — React components
-- `hooks/` — Client-side hooks
-- `schemas/` — Zod validation schemas
-- `translations/` — i18n JSON files (`fr.json`, `en.json`)
-- `actions/` — Next Safe Action server actions
-- `emails/` — React Email templates and senders
-- `layouts/` — Layout components scoped to the feature
+Business logic is organized into features:
+- `auth` — Magic link sign-in, session, email templates
+- `emails` — Shared email layout and translations
+- `common` — Shared UI utilities
+- `app/contacts` — Contact CRUD (list, save, delete, vCard sync)
+- `app/scanner` — Business card scan wizard: capture → AI analysis → review/save
+  - `scanner/detection/` — Pure canvas heuristics (card-formats, card-detection, hooks)
+  - `scanner/components/steps/` — CaptureStep, ProcessingStep, ReviewStep
+- `app/providers` — LLM/OCR provider configuration (stored per-user)
+- `app/tags` — Tag management and filtering
+- `app/layouts` — AppHeader, AppTabs, page shell
 
-Current features: `auth`, `landing`, `app` (with sub-features `organizations`, `membership`, `membership-application`), `common`, `contact`, `cookie`, `emails`, `legal`, `seo`, `analytic`
+Each feature contains some combination of: `components/`, `actions/`, `translations/`, `hooks/`, `schemas/`.
 
 ### Core Libraries (`src/lib/`)
 
 - `db.ts` — Drizzle ORM client (PostgreSQL via `pg` Pool)
-- `actions.ts` — Three `next-safe-action` clients: `action` (public), `authentificatedAction` (requires `role === "user"`), `adminAction` (requires `role === "admin"`)
+- `actions.ts` — Three `next-safe-action` clients:
+  - `action` — public (no auth)
+  - `authentificatedAction` — requires `role === "user"` (injects `ctx.userId`, `ctx.user`)
+  - `anyAuthenticatedAction` — any authenticated session regardless of role
 - `auth/server.ts` — Better Auth server instance
-- `i18n.ts` — next-intl request config; loads translations by merging all feature translation dirs
+- `i18n.ts` — next-intl request config; merges all `src/features/*/translations/` dirs
 
 ### Configuration (`config/`)
 
-All app-wide configuration lives here (not in `src/`):
-- `auth/` — Better Auth config (server + access-control)
-- `database.ts`, `url.ts`, `project.ts`, `i18n.ts`, `restrictions.ts`, `security.ts`
+All app-wide config lives here (not in `src/`):
+- `auth/` — Better Auth config and access-control
+- `project.ts` — App name and metadata
+- `database.ts`, `url.ts`, `i18n.ts`, `restrictions.ts`, `security.ts`
 
 ### Database (`db/`)
 
-- `schemas/` — Drizzle table definitions (`auth.ts`, `membership.ts`) + `index.ts` barrel export
+- `schemas/` — Drizzle table definitions (`auth.ts`, `membership.ts`) + `index.ts` barrel
 - `migrations/` — Auto-generated SQL migration files
 
 ## Key Patterns
 
 ### Authentication
 
-Better Auth with **magic links only** (no email/password). Registration is restricted to whitelisted email domains (`occos-cluster.com`, `occos-cluster.fr`, `occos.fr`) defined in `config/restrictions.ts`. The first user created automatically becomes `admin`; subsequent users get `user` role.
+Better Auth with **magic links only** (no email/password). Registration restricted to whitelisted email domains defined in `config/restrictions.ts`. The first user created automatically becomes `admin`; subsequent users get `user` role.
 
 Better Auth uses the `organization` plugin — organizations are mapped to `membership_profiles` in the DB schema. Sessions automatically set `activeOrganizationId` to the user's most recent membership.
 
 ### Server Actions
 
-Always use the appropriate action client from `src/lib/actions.ts`:
-- `action` for unauthenticated operations
-- `authentificatedAction` for member-only operations (injects `ctx.userId` and `ctx.user`)
-- `adminAction` for admin-only operations
+Always pick the right client from `src/lib/actions.ts`:
+- `action` — unauthenticated
+- `authentificatedAction` — member-only (role must be `"user"`)
+- `anyAuthenticatedAction` — any logged-in user (admin or user)
 
 ### i18n
 
-Supported locales: `fr`, `en`. Locale prefix is `never` (URLs don't include `/fr/` or `/en/`). The default locale is set via the `APP_LOCALE` env var. Translation files live at `src/features/[feature]/translations/[locale].json` and are loaded in `src/lib/i18n.ts`.
+Supported locales: `fr`, `en`. Locale prefix is `never` (no `/fr/` in URLs). Default locale set via `APP_LOCALE` env var. Translation namespace `"feature.section"` maps to `src/features/[feature]/translations/[locale].json` → `section` key.
 
 ### Code Style
 
-Biome handles linting and formatting. JS/TS uses **tabs** for indentation, 120-character line width, double quotes. JSON formatting is disabled (manual). Run `pnpm check` before committing.
+Biome for lint and format. **Tabs** for indentation, 120-character line width, double quotes. JSON formatting disabled (manual). Run `pnpm check` before committing.
 
 ## Environment Variables
 
-Required variables (see `env.ts` for full schema with validation):
+Required (see `env.ts` for full schema):
 - `APP_URL`, `NEXT_PUBLIC_APP_URL`
 - `DATABASE_URL`
 - `BETTER_AUTH_SECRET` — generate with `openssl rand -base64 32`
