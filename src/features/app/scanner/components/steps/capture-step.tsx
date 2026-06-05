@@ -5,6 +5,10 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCameraDetector } from "../../detection/use-camera-detector";
+import { useCardDetector } from "../../detection/use-card-detector";
+import { CameraOverlay } from "../camera-overlay";
+import { CardValidationBadge } from "../card-validation-badge";
 
 interface CaptureStepProps {
 	onImageSelected: (file: File) => void;
@@ -19,19 +23,35 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [isCameraReady, setIsCameraReady] = useState(false);
 	const videoRef = useRef<HTMLVideoElement>(null);
-	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const streamRef = useRef<MediaStream | null>(null);
 	const galleryInputRef = useRef<HTMLInputElement>(null);
 
 	const stopStream = useCallback(() => {
 		if (streamRef.current) {
-			streamRef.current.getTracks().forEach((track) => {
-				track.stop();
-			});
+			streamRef.current.getTracks().forEach((track) => track.stop());
 			streamRef.current = null;
 		}
 		setIsCameraReady(false);
 	}, []);
+
+	const handleCaptureFile = useCallback(
+		(file: File) => {
+			const url = URL.createObjectURL(file);
+			stopStream();
+			setSelectedFile(file);
+			setPreview(url);
+			setState("captured");
+		},
+		[stopStream],
+	);
+
+	const { validationState, isChecking } = useCardDetector(selectedFile);
+
+	const { detected, progress } = useCameraDetector({
+		enabled: state === "streaming" && isCameraReady,
+		videoRef,
+		onCapture: handleCaptureFile,
+	});
 
 	useEffect(() => {
 		return () => stopStream();
@@ -40,16 +60,11 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
 	const startCamera = async () => {
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({
-				video: {
-					facingMode: { ideal: "environment" },
-					width: { ideal: 1920 },
-					height: { ideal: 1080 },
-				},
+				video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
 			});
 			streamRef.current = stream;
 			setState("streaming");
-		} catch (err) {
-			console.error("Camera access error:", err);
+		} catch {
 			setState("denied");
 		}
 	};
@@ -65,52 +80,38 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
 		}
 	}, [state]);
 
-	const capturePhoto = () => {
+	const captureManual = useCallback(() => {
 		const video = videoRef.current;
-		const canvas = canvasRef.current;
-		if (!video || !canvas || !isCameraReady) return;
-
+		if (!video || !isCameraReady) return;
+		const canvas = document.createElement("canvas");
 		canvas.width = video.videoWidth;
 		canvas.height = video.videoHeight;
 		const ctx = canvas.getContext("2d");
-		if (ctx) {
-			ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-		}
-
+		if (!ctx) return;
+		ctx.drawImage(video, 0, 0);
 		canvas.toBlob(
 			(blob) => {
 				if (!blob) return;
-				const file = new File([blob], "capture.jpg", { type: "image/jpeg" });
-				const url = URL.createObjectURL(blob);
-				stopStream();
-				setSelectedFile(file);
-				setPreview(url);
-				setState("captured");
+				handleCaptureFile(new File([blob], "capture.jpg", { type: "image/jpeg" }));
 			},
 			"image/jpeg",
 			0.95,
 		);
-	};
+	}, [isCameraReady, handleCaptureFile]);
 
-	const retake = () => {
+	const retake = useCallback(() => {
 		if (preview) URL.revokeObjectURL(preview);
 		setPreview(null);
 		setSelectedFile(null);
 		startCamera();
-	};
+	}, [preview]);
 
-	const cancelStreaming = () => {
+	const cancelStreaming = useCallback(() => {
 		stopStream();
 		setState("idle");
-	};
+	}, [stopStream]);
 
-	const handleGalleryFile = (file: File) => {
-		stopStream();
-		setSelectedFile(file);
-		const url = URL.createObjectURL(file);
-		setPreview(url);
-		setState("captured");
-	};
+	const analyzeDisabled = !selectedFile || isChecking || validationState === "invalid" || validationState === "error";
 
 	return (
 		<div className="flex flex-col items-center gap-6 py-8 px-4 max-w-md mx-auto">
@@ -136,6 +137,7 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
 								<RefreshCwIcon className="size-8 text-muted-foreground animate-spin" />
 							</div>
 						)}
+						{isCameraReady && <CameraOverlay detected={detected} progress={progress} />}
 						<Button
 							size="icon"
 							variant="secondary"
@@ -146,7 +148,10 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
 						</Button>
 					</>
 				) : preview ? (
-					<img src={preview} alt={t("preview_alt")} className="w-full h-full object-cover" />
+					<>
+						<img src={preview} alt={t("preview_alt")} className="w-full h-full object-cover" />
+						<CardValidationBadge state={validationState} />
+					</>
 				) : (
 					<div className="flex flex-col items-center gap-3">
 						<div className="p-4 rounded-full bg-background/50">
@@ -156,13 +161,11 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
 				)}
 			</div>
 
-			<canvas ref={canvasRef} className="hidden" />
-
 			<div className="w-full space-y-3">
 				{state === "streaming" ? (
 					<Button
 						className="w-full h-12 text-base gap-2 rounded-xl shadow-lg"
-						onClick={capturePhoto}
+						onClick={captureManual}
 						disabled={!isCameraReady}
 					>
 						{t("capture_btn")}
@@ -201,10 +204,10 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
 						<Button
 							variant="default"
 							className="w-full h-12 text-base font-bold rounded-xl shadow-sm transition-all active:scale-[0.98]"
-							disabled={!selectedFile}
+							disabled={analyzeDisabled}
 							onClick={() => selectedFile && onImageSelected(selectedFile)}
 						>
-							{t("analyze_btn")}
+							{isChecking ? <RefreshCwIcon className="size-4 animate-spin" /> : t("analyze_btn")}
 						</Button>
 					</>
 				)}
@@ -215,7 +218,10 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
 				type="file"
 				accept="image/*"
 				className="hidden"
-				onChange={(e) => e.target.files?.[0] && handleGalleryFile(e.target.files[0])}
+				onChange={(e) => {
+					const file = e.target.files?.[0];
+					if (file) handleCaptureFile(file);
+				}}
 			/>
 		</div>
 	);
