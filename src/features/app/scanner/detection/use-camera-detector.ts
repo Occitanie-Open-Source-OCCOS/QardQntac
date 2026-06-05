@@ -72,6 +72,7 @@ export function useCameraDetector({ enabled, videoRef, onCapture }: UseCameraDet
 		if (!enabled) {
 			stabilityRef.current = 0;
 			hasCapturedRef.current = false;
+			lastFrameTimeRef.current = 0;
 			setDetectorState({ detected: false, progress: 0 });
 			if (rafRef.current) cancelAnimationFrame(rafRef.current);
 			return;

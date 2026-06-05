@@ -50,6 +50,7 @@ export function useCardDetector(file: File | null): UseCardDetectorResult {
 
 	useEffect(() => {
 		if (!file) {
+			setIsChecking(false);
 			setValidationState("idle");
 			return;
 		}
