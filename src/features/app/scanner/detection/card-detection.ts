@@ -1,4 +1,4 @@
-import { matchRatio, type CardFormat } from "./card-formats";
+import { type CardFormat, matchRatio } from "./card-formats";
 
 export interface DetectionResult {
 	valid: boolean;
@@ -6,11 +6,11 @@ export interface DetectionResult {
 	format: CardFormat | null;
 }
 
-const EDGE_THRESHOLD_GALLERY = 0.06;
-const EDGE_THRESHOLD_CAMERA = 0.08;
-const SAMPLE_W = 64;
-const SAMPLE_H = 40;
-const SOBEL_THRESHOLD = 30;
+const EDGE_THRESHOLD_GALLERY = 0.03;
+const EDGE_THRESHOLD_CAMERA = 0.04;
+const SAMPLE_W = 320;
+const SAMPLE_H = 200;
+const SOBEL_THRESHOLD = 15;
 
 function subsample(src: ImageData, w: number, h: number): ImageData {
 	const out = new ImageData(w, h);
@@ -33,9 +33,7 @@ function subsample(src: ImageData, w: number, h: number): ImageData {
 
 function sobelEdgeDensity(imageData: ImageData): number {
 	const sampled =
-		imageData.width > SAMPLE_W || imageData.height > SAMPLE_H
-			? subsample(imageData, SAMPLE_W, SAMPLE_H)
-			: imageData;
+		imageData.width > SAMPLE_W || imageData.height > SAMPLE_H ? subsample(imageData, SAMPLE_W, SAMPLE_H) : imageData;
 
 	const { data, width, height } = sampled;
 	const gray = new Float32Array(width * height);

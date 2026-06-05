@@ -30,10 +30,13 @@ export function useCameraDetector({ enabled, videoRef, onCapture }: UseCameraDet
 
 	const doCapture = useCallback(() => {
 		const video = videoRef.current;
-		if (!video) return;
+		if (!video || video.readyState < 2) return;
+		const w = video.videoWidth;
+		const h = video.videoHeight;
+		if (!w || !h) return;
 		const canvas = document.createElement("canvas");
-		canvas.width = video.videoWidth;
-		canvas.height = video.videoHeight;
+		canvas.width = w;
+		canvas.height = h;
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
 		ctx.drawImage(video, 0, 0);
@@ -119,7 +122,9 @@ export function useCameraDetector({ enabled, videoRef, onCapture }: UseCameraDet
 		}
 
 		rafRef.current = requestAnimationFrame(loop);
-		return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+		return () => {
+			if (rafRef.current) cancelAnimationFrame(rafRef.current);
+		};
 	}, [enabled, videoRef, sampleFrame, doCapture]);
 
 	return detectorState;

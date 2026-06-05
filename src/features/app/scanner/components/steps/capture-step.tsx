@@ -82,10 +82,13 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
 
 	const captureManual = useCallback(() => {
 		const video = videoRef.current;
-		if (!video || !isCameraReady) return;
+		if (!video || !isCameraReady || video.readyState < 2) return;
+		const w = video.videoWidth;
+		const h = video.videoHeight;
+		if (!w || !h) return;
 		const canvas = document.createElement("canvas");
-		canvas.width = video.videoWidth;
-		canvas.height = video.videoHeight;
+		canvas.width = w;
+		canvas.height = h;
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
 		ctx.drawImage(video, 0, 0);
