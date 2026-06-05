@@ -41,14 +41,18 @@ export function parseModelOutput(raw: string): ContactData {
 	if (jsonMatch) {
 		try {
 			const parsed = JSON.parse(jsonMatch[0]);
+			const clean = (v: unknown): string => {
+				const s = v != null ? String(v).trim() : "";
+				return /^(n\/?a|not available|unknown|none|null|undefined|-)$/i.test(s) ? "" : s;
+			};
 			return {
-				name: parsed.name != null ? String(parsed.name) : "",
-				title: parsed.title != null ? String(parsed.title) : "",
-				company: parsed.company != null ? String(parsed.company) : "",
-				email: parsed.email != null ? String(parsed.email) : "",
-				phone: parsed.phone != null ? String(parsed.phone) : "",
-				website: parsed.website != null ? String(parsed.website) : "",
-				address: parsed.address != null ? String(parsed.address) : "",
+				name: clean(parsed.name),
+				title: clean(parsed.title),
+				company: clean(parsed.company),
+				email: clean(parsed.email),
+				phone: clean(parsed.phone),
+				website: clean(parsed.website),
+				address: clean(parsed.address),
 			};
 		} catch {}
 	}
@@ -56,4 +60,4 @@ export function parseModelOutput(raw: string): ContactData {
 }
 
 export const SYSTEM_PROMPT =
-	'You are a contact information extractor. Given a business card image, extract all contact details and return ONLY a valid JSON object with exactly these fields: name, title, company, email, phone, website, address. Use empty string "" for any missing field. Output only the JSON, no explanation.';
+	'You are a contact information extractor. Examine the image carefully. If the image does NOT contain a business card or readable contact information (e.g. it is a nature photo, a person, a landscape, or has no visible text), return {"name":"","title":"","company":"","email":"","phone":"","website":"","address":""}. If the image IS a business card, extract only the information explicitly visible in the image — do NOT invent, infer, or guess any field. Return ONLY a valid JSON object with exactly these fields: name, title, company, email, phone, website, address. Use empty string "" for any field not present in the image. Never use placeholder text like "N/A", "not available", "unknown", or similar — only real values or empty string. Output only the JSON, no explanation.';
