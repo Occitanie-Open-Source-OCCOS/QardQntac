@@ -99,7 +99,7 @@ All configuration is done through environment variables in your `.env` file.
 |---|---|
 | `APP_URL` | The URL where your app is accessible (e.g. `https://cards.example.com`) |
 | `DATABASE_URL` | PostgreSQL connection string |
-| `BETTER_AUTH_SECRET` | Random secret key — generate with `openssl rand -base64 32` |
+| `APP_SECRET` | Random secret key — generate with `openssl rand -base64 32` |
 
 ### SMTP (optional)
 
