@@ -4,9 +4,7 @@ import { render } from "react-email";
 
 import { emailConfig } from "@/config/email";
 
-const transporter = emailConfig.transport
-	? nodemailer.createTransport(emailConfig.transport)
-	: null;
+const transporter = emailConfig.transport ? nodemailer.createTransport(emailConfig.transport) : null;
 
 type SendEmailParams = {
 	to: string;

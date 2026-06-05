@@ -5,54 +5,52 @@ import type { VisionProvider } from "../interface";
 import { parseModelOutput, SYSTEM_PROMPT } from "../shared";
 
 export class GeminiProvider implements VisionProvider {
-  async analyzeCard(imageBase64: string): Promise<ContactData> {
-    const apiKey = env.GEMINI_API_KEY;
-    const model = env.GEMINI_MODEL;
-    if (!apiKey) throw new Error("GEMINI_API_KEY missing in .env");
+	async analyzeCard(imageBase64: string): Promise<ContactData> {
+		const apiKey = env.GEMINI_API_KEY;
+		const model = env.GEMINI_MODEL;
+		if (!apiKey) throw new Error("GEMINI_API_KEY missing in .env");
 
-    let res: Response;
-    try {
-      res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-            contents: [
-              {
-                parts: [
-                  {
-                    inline_data: {
-                      mime_type: "image/jpeg",
-                      data: imageBase64,
-                    },
-                  },
-                  {
-                    text: "Extract the contact information from this business card image.",
-                  },
-                ],
-              },
-            ],
-            generationConfig: { responseMimeType: "application/json" },
-          }),
-        },
-      );
-    } catch {
-      throw new Error("Gemini not available — check your connection");
-    }
+		let res: Response;
+		try {
+			res = await fetch(
+				`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+				{
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+						contents: [
+							{
+								parts: [
+									{
+										inline_data: {
+											mime_type: "image/jpeg",
+											data: imageBase64,
+										},
+									},
+									{
+										text: "Extract the contact information from this business card image.",
+									},
+								],
+							},
+						],
+						generationConfig: { responseMimeType: "application/json" },
+					}),
+				},
+			);
+		} catch {
+			throw new Error("Gemini not available — check your connection");
+		}
 
-    if (res.status === 401 || res.status === 403)
-      throw new Error("GEMINI_API_KEY invalid");
-    if (!res.ok) throw new Error(`Gemini a returned an error ${res.status}`);
+		if (res.status === 401 || res.status === 403) throw new Error("GEMINI_API_KEY invalid");
+		if (!res.ok) throw new Error(`Gemini a returned an error ${res.status}`);
 
-    try {
-      const json = await res.json();
-      const content: string =
-        json?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-      return parseModelOutput(content);
-    } catch {
-      return emptyContact();
-    }
-  }
+		try {
+			const json = await res.json();
+			const content: string = json?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+			return parseModelOutput(content);
+		} catch {
+			return emptyContact();
+		}
+	}
 }

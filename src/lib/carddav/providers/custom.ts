@@ -3,34 +3,24 @@ import * as http from "../http";
 import type { CardDavCredentials, CardDavProvider } from "../interface";
 
 export class CustomProvider implements CardDavProvider {
-  readonly type = "custom";
-  readonly name = "Custom";
-  readonly urlPlaceholder =
-    "https://carddav.example.com/addressbooks/user/contacts/";
-  readonly urlHint = "CardDAV URL";
+	readonly type = "custom";
+	readonly name = "Custom";
+	readonly urlPlaceholder = "https://carddav.example.com/addressbooks/user/contacts/";
+	readonly urlHint = "CardDAV URL";
 
-  async testConnection(creds: CardDavCredentials): Promise<void> {
-    await http.discoverBooks(creds);
-  }
+	async testConnection(creds: CardDavCredentials): Promise<void> {
+		await http.discoverBooks(creds);
+	}
 
-  async saveContact(
-    vcard: string,
-    bookHref: string,
-    creds: CardDavCredentials,
-    remoteId?: string,
-  ): Promise<string> {
-    return http.saveContact(vcard, bookHref, creds, remoteId);
-  }
+	async saveContact(vcard: string, bookHref: string, creds: CardDavCredentials, remoteId?: string): Promise<string> {
+		return http.saveContact(vcard, bookHref, creds, remoteId);
+	}
 
-  async deleteContact(
-    remoteId: string,
-    bookHref: string,
-    creds: CardDavCredentials,
-  ): Promise<void> {
-    return http.deleteContact(remoteId, bookHref, creds);
-  }
+	async deleteContact(remoteId: string, bookHref: string, creds: CardDavCredentials): Promise<void> {
+		return http.deleteContact(remoteId, bookHref, creds);
+	}
 
-  async discoverBooks(creds: CardDavCredentials): Promise<AddressBook[]> {
-    return http.discoverBooks(creds);
-  }
+	async discoverBooks(creds: CardDavCredentials): Promise<AddressBook[]> {
+		return http.discoverBooks(creds);
+	}
 }

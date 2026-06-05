@@ -14,5 +14,7 @@
   "saved_toast": "Provider enregistré",
   "deleted_toast": "Provider supprimé",
   "pick_provider": "Choisir un provider",
-  "no_providers": "Aucun provider configuré"
+  "no_providers": "Aucun provider configuré",
+  "error_generic": "Erreur",
+  "error_network": "Erreur réseau"
 }

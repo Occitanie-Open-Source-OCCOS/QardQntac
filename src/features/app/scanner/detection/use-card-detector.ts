@@ -25,7 +25,10 @@ async function analyzeFile(file: File): Promise<ValidationState> {
 				canvas.width = w;
 				canvas.height = h;
 				const ctx = canvas.getContext("2d");
-				if (!ctx) { resolve("error"); return; }
+				if (!ctx) {
+					resolve("error");
+					return;
+				}
 				ctx.drawImage(img, 0, 0, w, h);
 				const imageData = ctx.getImageData(0, 0, w, h);
 				URL.revokeObjectURL(url);
@@ -58,10 +61,18 @@ export function useCardDetector(file: File | null): UseCardDetectorResult {
 		setIsChecking(true);
 		setValidationState("idle");
 		analyzeFile(file)
-			.then((state) => { if (!cancelled) setValidationState(state); })
-			.catch(() => { if (!cancelled) setValidationState("error"); })
-			.finally(() => { if (!cancelled) setIsChecking(false); });
-		return () => { cancelled = true; };
+			.then((state) => {
+				if (!cancelled) setValidationState(state);
+			})
+			.catch(() => {
+				if (!cancelled) setValidationState("error");
+			})
+			.finally(() => {
+				if (!cancelled) setIsChecking(false);
+			});
+		return () => {
+			cancelled = true;
+		};
 	}, [file]);
 
 	return { validationState, isChecking };

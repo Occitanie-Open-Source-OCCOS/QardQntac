@@ -38,9 +38,9 @@ Everything runs on your own server. No data leaves your infrastructure unless yo
 
 Before installing, make sure you have:
 
-- **A Linux server** (or a machine that runs 24/7)
-- **Docker** — to run the PostgreSQL database
-- **Node.js 20+** and **pnpm** — to run the application
+- **A Linux server**
+- **Docker**
+- **Node.js 20+** and **pnpm**
 - **An SMTP server** *(optional)* — to send magic link login emails. Without one, links are printed in the server console instead
 - **An AI provider** — either Ollama running locally, or an API key from OpenAI / Anthropic / Google
 
@@ -52,7 +52,7 @@ Before installing, make sure you have:
 
 ```bash
 git clone <repo-url>
-cd kardqntact
+cd qardqntac
 ```
 
 ### 2. Install dependencies
@@ -165,11 +165,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - letsencrypt:/letsencrypt
 
-  kardqntact:
-    image: kardqntact
+  qardqntac:
+    image: qardqntac
     labels:
-      - traefik.http.routers.kardqntact.rule=Host(`cards.example.com`)
-      - traefik.http.routers.kardqntact.tls.certresolver=le
+      - traefik.http.routers.qardqntac.rule=Host(`cards.example.com`)
+      - traefik.http.routers.qardqntac.tls.certresolver=le
 ```
 
 ### Alternatives

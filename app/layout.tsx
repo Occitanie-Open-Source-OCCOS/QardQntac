@@ -8,17 +8,21 @@ import Providers from "@/features/common/providers";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-	const locale = await getLocale();
-	const messages = await getMessages();
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const locale = await getLocale();
+  const messages = await getMessages();
 
-	return (
-		<html lang={locale} suppressContentEditableWarning suppressHydrationWarning>
-			<body className={`${inter.variable} font-sans antialiased`}>
-				<NextIntlClientProvider locale={locale} messages={messages}>
-					<Providers>{children}</Providers>
-				</NextIntlClientProvider>
-			</body>
-		</html>
-	);
+  return (
+    <html lang={locale} suppressContentEditableWarning suppressHydrationWarning>
+      <body className={`${inter.variable} font-sans antialiased`}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
+      </body>
+    </html>
+  );
 }

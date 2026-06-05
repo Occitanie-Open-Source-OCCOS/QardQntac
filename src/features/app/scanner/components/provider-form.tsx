@@ -7,9 +7,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ProviderSummary } from "@/db/schemas/contacts";
-import type { ProviderType } from "@/lib/carddav";
 import { saveProvider } from "@/features/app/providers/actions/save-provider.action";
 import { testProviderConnection } from "@/features/app/providers/actions/test-provider-connection.action";
+import type { ProviderType } from "@/lib/carddav";
 
 const PROVIDER_META: Record<ProviderType, { name: string; urlPlaceholder: string; urlHint: string }> = {
 	radicale: {
@@ -55,12 +55,12 @@ export function ProviderForm({ initial, onSaved, onCancel }: ProviderFormProps) 
 			toast.success(t("saved_toast"));
 			onSaved();
 		},
-		onError: ({ error }) => toast.error(error.serverError ?? "Erreur"),
+		onError: ({ error }) => toast.error(error.serverError ?? t("error_generic")),
 	});
 
 	const { execute: execTest, isPending: isTesting } = useAction(testProviderConnection, {
 		onSuccess: () => toast.success(t("test_success")),
-		onError: ({ error }) => toast.error(`${t("test_failed")}: ${error.serverError ?? "Erreur réseau"}`),
+		onError: ({ error }) => toast.error(`${t("test_failed")}: ${error.serverError ?? t("error_network")}`),
 	});
 
 	const canTest = !!url && !!username && !!password;

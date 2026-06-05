@@ -358,7 +358,7 @@ const authServerConfig = {
     ...(env.AUTORIZED_DOMAINS || []),
     urlConfig.baseUrl || "http://localhost:3000" || "https://localhost:3000",
   ],
-  secret: env.BETTER_AUTH_SECRET,
+  secret: env.APP_SECRET,
   experimental: {
     joins: true,
   },

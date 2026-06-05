@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: karkqntact-db-dev
+    container_name: qardqntac-db-dev
     ports:
       - "5432:5432"
     environment:
@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
       POSTGRES_DB: ${POSTGRES_DB:-db}
     volumes:
-      - karkqntact_postgres_data:/var/lib/postgresql/data
+      - qardqntac_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d db"]
       interval: 5s
@@ -17,7 +17,7 @@ services:
       retries: 5
   mailpit:
     image: axllent/mailpit:latest
-    container_name: karkqntact-mailpit-dev
+    container_name: qardqntac-mailpit-dev
     hostname: mailpit
     restart: unless-stopped
     ports:
@@ -25,4 +25,4 @@ services:
       - "1025:1025"
 
 volumes:
-  karkqntact_postgres_data:
+  qardqntac_postgres_data:

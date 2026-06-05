@@ -11,46 +11,57 @@ import { ReviewStep } from "./steps/review-step";
 type Step = "capture" | "processing" | "review";
 
 export function ScannerWizard() {
-	const tErrors = useTranslations("scanner.errors");
-	const [step, setStep] = useState<Step>("capture");
-	const [selectedFile, setSelectedFile] = useState<File | null>(null);
-	const [imageUrl, setImageUrl] = useState("");
-	const [contactData, setContactData] = useState<ContactData | null>(null);
+  const tErrors = useTranslations("scanner.errors");
+  const [step, setStep] = useState<Step>("capture");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [contactData, setContactData] = useState<ContactData | null>(null);
 
-	const reset = () => {
-		setStep("capture");
-		setSelectedFile(null);
-		setImageUrl("");
-		setContactData(null);
-	};
+  const reset = () => {
+    setStep("capture");
+    setSelectedFile(null);
+    setImageUrl("");
+    setContactData(null);
+  };
 
-	const handleImageSelected = (file: File) => {
-		setSelectedFile(file);
-		setStep("processing");
-	};
+  const handleImageSelected = (file: File) => {
+    setSelectedFile(file);
+    setStep("processing");
+  };
 
-	const handleProcessingDone = (url: string, data: ContactData) => {
-		setImageUrl(url);
-		setContactData(data);
-		setStep("review");
-	};
+  const handleProcessingDone = (url: string, data: ContactData) => {
+    setImageUrl(url);
+    setContactData(data);
+    setStep("review");
+  };
 
-	const handleProcessingError = (message: string) => {
-		toast.error(message || tErrors("ollama_down"));
-		reset();
-	};
+  const handleProcessingError = (message: string) => {
+    toast.error(message || tErrors("ollama_down"));
+    reset();
+  };
 
-	return (
-		<div>
-			{step === "capture" && <CaptureStep onImageSelected={handleImageSelected} />}
+  return (
+    <div>
+      {step === "capture" && (
+        <CaptureStep onImageSelected={handleImageSelected} />
+      )}
 
-			{step === "processing" && selectedFile && (
-				<ProcessingStep file={selectedFile} onDone={handleProcessingDone} onError={handleProcessingError} />
-			)}
+      {step === "processing" && selectedFile && (
+        <ProcessingStep
+          file={selectedFile}
+          onDone={handleProcessingDone}
+          onError={handleProcessingError}
+        />
+      )}
 
-			{step === "review" && contactData && (
-				<ReviewStep imageUrl={imageUrl} data={contactData} onSave={reset} onRetry={reset} />
-			)}
-		</div>
-	);
+      {step === "review" && contactData && (
+        <ReviewStep
+          imageUrl={imageUrl}
+          data={contactData}
+          onSave={reset}
+          onRetry={reset}
+        />
+      )}
+    </div>
+  );
 }

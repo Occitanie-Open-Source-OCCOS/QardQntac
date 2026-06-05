@@ -1,13 +1,13 @@
 // src/features/app/contacts/components/contacts-grid.tsx
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import {
   createColumnHelper,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useQuery } from "@tanstack/react-query";
 import { SettingsIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useMemo, useState } from "react";

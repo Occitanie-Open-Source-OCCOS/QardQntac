@@ -7,65 +7,50 @@ import { anyAuthenticatedAction } from "@/lib/actions";
 import { db } from "@/lib/db";
 
 export const saveProvider = anyAuthenticatedAction
-  .inputSchema(
-    z.object({
-      id: z.uuid().optional(),
-      type: z.enum(["radicale", "baikal", "nextcloud", "custom"]),
-      label: z.string().min(1),
-      url: z.string().min(1),
-      username: z.string().min(1),
-      password: z.string().optional(),
-    }),
-  )
-  .action(
-    async ({
-      parsedInput: { id, type, label, url, username, password },
-      ctx: { userId },
-    }) => {
-      if (id) {
-        const [existing] = await db
-          .select({ id: userCardDavProviders.id })
-          .from(userCardDavProviders)
-          .where(
-            and(
-              eq(userCardDavProviders.id, id),
-              eq(userCardDavProviders.userId, userId),
-            ),
-          )
-          .limit(1);
-        if (!existing) throw new Error("Provider not found");
-        const updates: Record<string, unknown> = {
-          type,
-          label,
-          url,
-          username,
-          updatedAt: new Date(),
-        };
-        if (password) updates.password = password;
-        await db
-          .update(userCardDavProviders)
-          .set(updates)
-          .where(
-            and(
-              eq(userCardDavProviders.id, id),
-              eq(userCardDavProviders.userId, userId),
-            ),
-          );
-        return { id };
-      }
-      if (!password) throw new Error("Password required for new provider");
-      const [row] = await db
-        .insert(userCardDavProviders)
-        .values({
-          userId,
-          type,
-          label,
-          url,
-          username,
-          password,
-          updatedAt: new Date(),
-        })
-        .returning({ id: userCardDavProviders.id });
-      return { id: row.id };
-    },
-  );
+	.inputSchema(
+		z.object({
+			id: z.uuid().optional(),
+			type: z.enum(["radicale", "baikal", "nextcloud", "custom"]),
+			label: z.string().min(1),
+			url: z.string().min(1),
+			username: z.string().min(1),
+			password: z.string().optional(),
+		}),
+	)
+	.action(async ({ parsedInput: { id, type, label, url, username, password }, ctx: { userId } }) => {
+		if (id) {
+			const [existing] = await db
+				.select({ id: userCardDavProviders.id })
+				.from(userCardDavProviders)
+				.where(and(eq(userCardDavProviders.id, id), eq(userCardDavProviders.userId, userId)))
+				.limit(1);
+			if (!existing) throw new Error("Provider not found");
+			const updates: Record<string, unknown> = {
+				type,
+				label,
+				url,
+				username,
+				updatedAt: new Date(),
+			};
+			if (password) updates.password = password;
+			await db
+				.update(userCardDavProviders)
+				.set(updates)
+				.where(and(eq(userCardDavProviders.id, id), eq(userCardDavProviders.userId, userId)));
+			return { id };
+		}
+		if (!password) throw new Error("Password required for new provider");
+		const [row] = await db
+			.insert(userCardDavProviders)
+			.values({
+				userId,
+				type,
+				label,
+				url,
+				username,
+				password,
+				updatedAt: new Date(),
+			})
+			.returning({ id: userCardDavProviders.id });
+		return { id: row.id };
+	});

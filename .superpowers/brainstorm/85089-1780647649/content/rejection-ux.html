@@ -1,0 +1,40 @@
+<h2>Comportement sur image rejetée</h2>
+<p class="subtitle">Quand la galerie reçoit une photo de famille ou screenshot — que se passe-t-il ?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Blocage strict</h3>
+      <p>Bouton "Analyser" désactivé. Message sous l'image : <em>"Image non reconnue comme carte de visite"</em>. L'utilisateur doit reprendre ou choisir une autre image.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pour</h4><ul><li>Zéro appels inutiles au modèle</li><li>Feedback immédiat et clair</li></ul></div>
+        <div class="cons"><h4>Contre</h4><ul><li>Bloque si faux négatif (carte mal détectée)</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Avertissement + forcer</h3>
+      <p>Badge d'avertissement sur l'image. Bouton "Analyser quand même" disponible. L'utilisateur garde le choix final.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pour</h4><ul><li>Pas bloquant si faux négatif</li><li>Éduque sans empêcher</li></ul></div>
+        <div class="cons"><h4>Contre</h4><ul><li>Les utilisateurs cliquent "forcer" par réflexe</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Seuil permissif</h3>
+      <p>Filtre très tolérant — bloque uniquement les cas évidents (selfie, paysage plein écran). Doute = laisse passer.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pour</h4><ul><li>Presque jamais de faux négatifs</li><li>Expérience fluide</li></ul></div>
+        <div class="cons"><h4>Contre</h4><ul><li>Filtre moins efficace, économie moindre</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

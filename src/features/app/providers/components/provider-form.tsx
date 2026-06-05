@@ -55,12 +55,12 @@ export function ProviderForm({ initial, onSaved, onCancel }: ProviderFormProps) 
 			toast.success(t("saved_toast"));
 			onSaved();
 		},
-		onError: ({ error }) => toast.error(error.serverError ?? "Erreur"),
+		onError: ({ error }) => toast.error(error.serverError ?? t("error_generic")),
 	});
 
 	const { execute: execTest, isPending: isTesting } = useAction(testProviderConnection, {
 		onSuccess: () => toast.success(t("test_success")),
-		onError: ({ error }) => toast.error(`${t("test_failed")}: ${error.serverError ?? "Erreur réseau"}`),
+		onError: ({ error }) => toast.error(`${t("test_failed")}: ${error.serverError ?? t("error_network")}`),
 	});
 
 	const canTest = !!url && !!username && !!password;

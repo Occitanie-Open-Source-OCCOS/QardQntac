@@ -1,0 +1,54 @@
+FROM node:24-alpine AS base
+RUN apk add --no-cache libc6-compat openssl
+RUN corepack enable pnpm
+
+FROM base AS deps
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
+RUN pnpm install --frozen-lockfile
+
+FROM base AS dev
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+RUN chmod +x /app/docker/dev/entrypoint.sh
+ENTRYPOINT ["sh", "/app/docker/dev/entrypoint.sh"]
+
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV SKIP_ENV_VALIDATION=1
+RUN pnpm build
+
+FROM base AS prod
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=80
+ENV HOSTNAME="0.0.0.0"
+
+RUN addgroup --system --gid 1001 nodejs \
+ && adduser  --system --uid 1001 nextjs
+
+COPY ./docker/production/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/src/db ./src/db
+
+RUN mkdir -p .next && chown nextjs:nodejs .next
+
+RUN apk del apk-tools
+
+USER nextjs
+
+EXPOSE 80
+ENTRYPOINT ["sh","/app/entrypoint.sh"]

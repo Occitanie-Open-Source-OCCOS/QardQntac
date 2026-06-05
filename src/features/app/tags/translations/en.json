@@ -12,5 +12,6 @@
 	"created_toast": "Tag created",
 	"deleted_toast": "Tag deleted",
 	"updated_toast": "Tag updated",
-	"tag_label": "Tags"
+	"tag_label": "Tags",
+	"error_generic": "Error"
 }

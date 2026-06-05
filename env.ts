@@ -4,7 +4,7 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     APP_URL: z.url(),
-    BETTER_AUTH_SECRET: z.string().min(1),
+    APP_SECRET: z.string().min(1),
     DATABASE_URL: z.string().min(1),
     AUTORIZED_DOMAINS: z
       .string()
@@ -53,7 +53,7 @@ export const env = createEnv({
   runtimeEnv: {
     APP_URL: process.env.APP_URL,
     DATABASE_URL: process.env.DATABASE_URL,
-    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    APP_SECRET: process.env.APP_SECRET,
     AUTORIZED_DOMAINS: process.env.AUTORIZED_DOMAINS,
     SMTP_HOST: process.env.SMTP_HOST,
     SMTP_PORT: process.env.SMTP_PORT,

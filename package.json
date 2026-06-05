@@ -2,7 +2,7 @@
   "name": "qardqntac",
   "version": "1.0.0",
   "license": "MIT",
-  "author": "QardQntac",
+  "author": "KardQntact",
   "packageManager": "pnpm@11.0.8",
   "private": true,
   "scripts": {

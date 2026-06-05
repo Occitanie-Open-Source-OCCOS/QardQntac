@@ -14,5 +14,7 @@
   "saved_toast": "Provider saved",
   "deleted_toast": "Provider deleted",
   "pick_provider": "Choose a provider",
-  "no_providers": "No providers configured"
+  "no_providers": "No providers configured",
+  "error_generic": "Error",
+  "error_network": "Network error"
 }

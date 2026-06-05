@@ -1,7 +1,7 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { contactTags, contacts } from "@/db/schemas";
+import { contacts, contactTags } from "@/db/schemas";
 import { anyAuthenticatedAction } from "@/lib/actions";
 import { db } from "@/lib/db";
 

@@ -6,9 +6,9 @@ interface FormatSpec {
 }
 
 export const CARD_FORMATS: Record<CardFormat, FormatSpec> = {
-	standard: { ratio: 1.75, tolerance: 0.20 },
-	square: { ratio: 1.0, tolerance: 0.20 },
-	portrait: { ratio: 1 / 1.75, tolerance: 0.20 },
+	standard: { ratio: 1.75, tolerance: 0.2 },
+	square: { ratio: 1.0, tolerance: 0.2 },
+	portrait: { ratio: 1 / 1.75, tolerance: 0.2 },
 };
 
 export function matchRatio(ratio: number): CardFormat | null {
