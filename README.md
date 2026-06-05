@@ -1,6 +1,10 @@
-# KardQntact
+<p align="center">
+  <img src=".github/assets/logo.png" alt="QardQntac" width="200" />
+</p>
 
-**KardQntact** is an open-source, self-hosted business card scanner. Take a photo of a business card, let AI extract the contact information, then save it to your address book — or sync it directly to any CardDAV server (Nextcloud, Radicale, Baikal, …).
+# QardQntac
+
+**QardQntac** is an open-source, self-hosted business card scanner. Take a photo of a business card, let AI extract the contact information, then save it to your address book — or sync it directly to any CardDAV server (Nextcloud, Radicale, Baikal, …).
 
 ---
 
@@ -99,7 +103,7 @@ All configuration is done through environment variables in your `.env` file.
 
 ### SMTP (optional)
 
-KardQntact uses magic links to sign in. If SMTP is configured, the link is sent by email. **If not, the link is printed in the server logs** — useful for testing or self-hosted setups where you have direct console access.
+QardQntac uses magic links to sign in. If SMTP is configured, the link is sent by email. **If not, the link is printed in the server logs** — useful for testing or self-hosted setups where you have direct console access.
 
 | Variable | Description |
 |---|---|
@@ -107,7 +111,7 @@ KardQntact uses magic links to sign in. If SMTP is configured, the link is sent 
 | `SMTP_PORT` | SMTP port (usually `587` or `465`) |
 | `SMTP_USER` | SMTP username |
 | `SMTP_PASSWORD` | SMTP password |
-| `SMTP_FROM` | Sender address (e.g. `KardQntact <no-reply@example.com>`) |
+| `SMTP_FROM` | Sender address (e.g. `QardQntac <no-reply@example.com>`) |
 
 ### AI provider
 
@@ -136,7 +140,7 @@ KardQntact uses magic links to sign in. If SMTP is configured, the link is sent 
 
 ## HTTPS and mobile access
 
-**The camera scanner requires HTTPS.** Browsers block access to the device camera on plain `http://` pages (except `localhost`). To use KardQntact on a phone or tablet, the app must be served over HTTPS with a valid certificate.
+**The camera scanner requires HTTPS.** Browsers block access to the device camera on plain `http://` pages (except `localhost`). To use QardQntac on a phone or tablet, the app must be served over HTTPS with a valid certificate.
 
 ### Using Traefik (recommended for self-hosting)
 
@@ -232,7 +236,7 @@ GEMINI_MODEL=gemini-1.5-flash
 
 ## Syncing to a CardDAV server
 
-CardDAV is the standard protocol used by contact apps (iOS Contacts, Android, Nextcloud, Thunderbird, etc.). KardQntact can push contacts directly to any CardDAV address book.
+CardDAV is the standard protocol used by contact apps (iOS Contacts, Android, Nextcloud, Thunderbird, etc.). QardQntac can push contacts directly to any CardDAV address book.
 
 ### Supported servers
 
@@ -263,7 +267,7 @@ When syncing, tags assigned to a contact are exported as the `CATEGORIES` field 
 
 ### Restricting sign-ups by email domain
 
-If you only want people from specific organizations to access KardQntact, set:
+If you only want people from specific organizations to access QardQntac, set:
 
 ```
 AUTH_WHITELISTED_DOMAINS=yourcompany.com,partner.org
