@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+title: QardQntact
+message: If you use this software, please cite it as below.
+type: software
+authors:
+  - family-names: LAGACHE
+    given-names: Théo
+repository-code: https://github.com/Occitanie-Open-Source-OCCOS/QardQntac
+url: https://occos.fr
+abstract: >-
+    QardQntact is a contact management application built with React and Node.js, designed to help users organize and manage their contacts efficiently. It provides features such as contact creation, editing, deletion, and categorization, along with a user-friendly interface for seamless interaction.
+keywords:
+    - docker
+    - react
+    - nodejs
+    - contact management
+    - postgresql
+    - mailpit
+    - self-hosted
+    - open-source
+    - pwa
+license: MIT
+version: 1.0.0
+date-released: '2026-06-01'
