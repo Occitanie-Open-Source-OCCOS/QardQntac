@@ -47,7 +47,7 @@ export function Waiting({ email, onBack, callbackURL, isEmergency }: WaitingProp
 	return (
 		<div className="flex flex-col gap-10">
 			<div>
-				<img src="/assets/logo.svg" alt="KardQntact" className="h-10 w-auto" />
+				<img src="/assets/logo.svg" alt="QardQntac" className="h-10 w-auto" />
 			</div>
 
 			<div className="flex flex-col gap-4">

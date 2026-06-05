@@ -42,7 +42,7 @@ export function AppHeader() {
 
 	return (
 		<header className="sticky top-0 z-50 bg-background border-b border-border px-4 py-3 flex items-center justify-between">
-			<img src="/assets/logo.svg" alt="KardQntact" className="h-6 w-auto" />
+			<img src="/assets/logo.svg" alt="QardQntac" className="h-6 w-auto" />
 
 			<DropdownMenu>
 				<DropdownMenuTrigger

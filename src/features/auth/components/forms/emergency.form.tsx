@@ -32,7 +32,7 @@ export function EmergencyForm({ onBack, onSent, callbackURL, defaultValue, onMut
 	return (
 		<div className="flex flex-col gap-10">
 			<div>
-				<img src="/assets/logo.svg" alt="KardQntact" className="h-10 w-auto" />
+				<img src="/assets/logo.svg" alt="QardQntac" className="h-10 w-auto" />
 			</div>
 			<div className="space-y-2">
 				<h1 className="font-heading text-2xl font-bold tracking-tight">{t("title")}</h1>

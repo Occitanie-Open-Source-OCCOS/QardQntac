@@ -9,12 +9,10 @@ export const emailConfig = {
 				host: env.SMTP_HOST!,
 				port: env.SMTP_PORT!,
 				secure: env.NODE_ENV === "production",
-				auth: env.SMTP_USER
-					? { user: env.SMTP_USER, pass: env.SMTP_PASSWORD }
-					: undefined,
+				auth: env.SMTP_USER ? { user: env.SMTP_USER, pass: env.SMTP_PASSWORD } : undefined,
 			}
 		: null,
 	defaults: {
-		from: env.SMTP_FROM ?? "KardQntact <no-reply@localhost>",
+		from: env.SMTP_FROM ?? "QardQntac <no-reply@localhost>",
 	},
 } as const;

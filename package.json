@@ -1,8 +1,8 @@
 {
-  "name": "kardqntact",
+  "name": "qardqntac",
   "version": "1.0.0",
   "license": "MIT",
-  "author": "KardQntact",
+  "author": "QardQntac",
   "packageManager": "pnpm@11.0.8",
   "private": true,
   "scripts": {
