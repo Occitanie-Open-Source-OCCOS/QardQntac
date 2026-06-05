@@ -1,0 +1,141 @@
+name: Docker Publish
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      ref:
+        required: true
+        type: string
+      image_name:
+        required: false
+        type: string
+        default: "occos/qardqntac"
+      add_latest:
+        required: false
+        type: boolean
+        default: false
+      target:
+        required: false
+        type: string
+        default: "prod"
+      dockerfile:
+        required: false
+        type: string
+        default: "./docker/dockerfile"
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+
+jobs:
+  build:
+    name: Build architectures
+    runs-on: ${{ matrix.platform == 'linux/amd64' && 'ubuntu-latest' || 'ubuntu-24.04-arm' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Prepare Image Tags
+        id: prep
+        run: |
+          ARCH=${{ matrix.platform == 'linux/amd64' && 'amd64' || 'arm64' }}
+          echo "image=${{ inputs.image_name }}:${{inputs.version}}-$ARCH" >> $GITHUB_OUTPUT
+          echo "safe_platform=${{ matrix.platform == 'linux/amd64' && 'linux-amd64' || 'linux-arm64' }}" >> $GITHUB_OUTPUT
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          platforms: ${{ matrix.platform }}
+          push: true
+          tags: ${{ steps.prep.outputs.image }}
+          target: ${{ inputs.target }}
+          cache-from: type=gha,scope=build-${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=build-${{ matrix.platform }}
+
+      - name: Save image name for manifest
+        run: echo "${{ steps.prep.outputs.image }}" > image.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: image-${{ steps.prep.outputs.safe_platform }}
+          path: image.txt
+          retention-days: 1
+
+  create-manifest:
+    name: Create multi-arch manifest
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: image-linux-amd64
+          path: /tmp/digests/amd64
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: image-linux-arm64
+          path: /tmp/digests/arm64
+
+      - name: Login to Docker
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Generate semantic tags
+        id: tags
+        run: |
+          VERSION="${{ inputs.version }}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+          echo "VERSION_TAG=$VERSION" >> $GITHUB_OUTPUT
+          if [ -n "$MINOR" ]; then
+            echo "MINOR_TAG=$MAJOR.$MINOR" >> $GITHUB_OUTPUT
+          fi
+          if [ -n "$MAJOR" ]; then
+            echo "MAJOR_TAG=$MAJOR" >> $GITHUB_OUTPUT
+          fi
+          if [ "${{ inputs.add_latest }}" = "true" ]; then
+            echo "LATEST_TAG=latest" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ inputs.image_name }}
+          tags: |
+            type=raw,value=${{ steps.tags.outputs.VERSION_TAG }}
+            type=raw,value=${{ steps.tags.outputs.MINOR_TAG }}
+            type=raw,value=${{ steps.tags.outputs.MAJOR_TAG }}
+            type=raw,value=${{ steps.tags.outputs.LATEST_TAG }}
+
+      - name: Create and push manifest list
+        working-directory: /tmp/digests
+        run: |
+          DOCKER_IMAGES="$(cat amd64/image.txt) $(cat arm64/image.txt)"
+          TAG_ARGS=$(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON")
+          echo $TAG_ARGS
+          docker buildx imagetools create $TAG_ARGS $DOCKER_IMAGES

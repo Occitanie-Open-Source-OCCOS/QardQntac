@@ -46,7 +46,80 @@ Before installing, make sure you have:
 
 ---
 
-## Installation
+## Quick start with Docker Compose
+
+The fastest way to run QardQntac locally with a local AI model — no Node.js or pnpm required.
+
+```yaml
+services:
+  app:
+    image: occos/qardqntac:latest
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      APP_URL: http://localhost:3000
+      APP_SECRET: changeme   # replace with: openssl rand -base64 32
+      DATABASE_URL: postgres://user:password@db:5432/db
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: llama3.2-vision
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    # Uncomment to use a GPU:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+volumes:
+  postgres_data:
+  ollama_data:
+```
+
+### 2. Start the stack
+
+```bash
+docker compose up -d
+```
+
+### 3. Pull the vision model
+
+```bash
+docker compose exec ollama ollama pull llama3.2-vision
+```
+
+> For lower-spec machines, use `moondream` (~1.7 GB) instead and set `OLLAMA_MODEL=moondream`.
+
+### 4. Open the app
+
+Go to [http://localhost:3000](http://localhost:3000). The first account created becomes the administrator.
+
+---
+
+## Installation (from source)
 
 ### 1. Clone the repository
 
