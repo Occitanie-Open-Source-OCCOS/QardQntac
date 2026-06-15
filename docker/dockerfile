@@ -26,7 +26,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV SKIP_ENV_VALIDATION=1
 RUN pnpm build
 
-FROM cgr.dev/chainguard/node:24 AS prod
+FROM node:24-alpine AS prod
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -34,12 +34,21 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=80
 ENV HOSTNAME="0.0.0.0"
 
+RUN addgroup --system --gid 1001 nodejs \
+ && adduser  --system --uid 1001 nextjs
+
+
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/db ./db
 
-RUN mkdir -p /app/data .next
+RUN mkdir -p .next && chown nextjs:nodejs /app/data .next
+
+RUN apk del apk-tools busybox-binsh \
+ && ln -sf /bin/busybox /bin/sh || true
+
+USER nextjs
 
 EXPOSE 80
-CMD ["/app/server.js"]
+CMD ["node", "server.js"]
