@@ -8,10 +8,19 @@ export const nextConfig: NextConfig = withNextIntl({
   output: "standalone",
   images: {},
   cacheComponents: false,
+  serverExternalPackages: ["@electric-sql/pglite"],
   experimental: {
     serverActions: {
       bodySizeLimit: "8mb",
     },
+  },
+  webpack(config) {
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+      layers: true,
+    };
+    return config;
   },
   logging: {
     browserToTerminal: false,
