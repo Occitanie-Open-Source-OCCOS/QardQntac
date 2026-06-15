@@ -7,11 +7,14 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n.ts");
 export const nextConfig: NextConfig = withNextIntl({
   output: "standalone",
   images: {},
+  swcMinify: false,
+  transpilePackages: ["@electric-sql/pglite"],
   cacheComponents: false,
   serverExternalPackages: ["@electric-sql/pglite"],
   outputFileTracingIncludes: {
     "/**": ["./node_modules/@electric-sql/pglite/**"],
   },
+
   experimental: {
     serverActions: {
       bodySizeLimit: "8mb",
