@@ -4,8 +4,12 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     APP_URL: z.url(),
-    APP_SECRET: z.string().min(1),
-    DATABASE_URL: z.string().min(1),
+    APP_SECRET: z.string().optional(),
+    DATABASE_URL: z.string().optional(),
+    DISABLE_DB_WARN: z
+      .string()
+      .optional()
+      .transform((v) => v === "true" || v === "1"),
     AUTORIZED_DOMAINS: z
       .string()
       .default("")
@@ -37,11 +41,14 @@ export const env = createEnv({
       .default("true")
       .transform((v) => v !== "false" && v !== "0"),
     LOCALE: z.enum(["fr", "en"]).default("en"),
+    VISION_PROVIDER: z
+      .enum(["ollama", "openai", "anthropic", "gemini", "custom"])
+      .default("ollama"),
+    CUSTOM_BASE_URL: z.string().optional(),
+    CUSTOM_MODEL: z.string().optional(),
+    CUSTOM_API_KEY: z.string().optional(),
     OLLAMA_BASE_URL: z.string().default("http://localhost:11434"),
     OLLAMA_MODEL: z.string().default("llama3.2-vision"),
-    VISION_PROVIDER: z
-      .enum(["ollama", "openai", "anthropic", "gemini"])
-      .default("ollama"),
     OPENAI_API_KEY: z.string().optional(),
     OPENAI_MODEL: z.string().default("gpt-4o"),
     ANTHROPIC_API_KEY: z.string().optional(),
@@ -53,6 +60,7 @@ export const env = createEnv({
   runtimeEnv: {
     APP_URL: process.env.APP_URL,
     DATABASE_URL: process.env.DATABASE_URL,
+    DISABLE_DB_WARN: process.env.DISABLE_DB_WARN,
     APP_SECRET: process.env.APP_SECRET,
     AUTORIZED_DOMAINS: process.env.AUTORIZED_DOMAINS,
     SMTP_HOST: process.env.SMTP_HOST,
@@ -69,6 +77,9 @@ export const env = createEnv({
     OLLAMA_BASE_URL: process.env.OLLAMA_BASE_URL,
     OLLAMA_MODEL: process.env.OLLAMA_MODEL,
     VISION_PROVIDER: process.env.VISION_PROVIDER,
+    CUSTOM_BASE_URL: process.env.CUSTOM_BASE_URL,
+    CUSTOM_MODEL: process.env.CUSTOM_MODEL,
+    CUSTOM_API_KEY: process.env.CUSTOM_API_KEY,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     OPENAI_MODEL: process.env.OPENAI_MODEL,
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,

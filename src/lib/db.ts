@@ -1,11 +1,21 @@
-import { drizzle } from "drizzle-orm/node-postgres";
+import { PGlite } from "@electric-sql/pglite";
+import {
+  drizzle as drizzlePg,
+  type NodePgDatabase,
+} from "drizzle-orm/node-postgres";
+import { drizzle as drizzlePglite } from "drizzle-orm/pglite";
 import { Pool } from "pg";
-import { dbConfig } from "@/config/database";
 import * as schema from "@/db/schemas/index";
 
-const pool = new Pool({
-	connectionString: dbConfig.url,
-	//ssl: dbConfig.ssl,
-});
+declare global {
+  var __db: NodePgDatabase<typeof schema> | undefined;
+}
 
-export const db = drizzle(pool, { schema });
+export const db: NodePgDatabase<typeof schema> = (globalThis.__db ??= process
+  .env.DATABASE_URL
+  ? drizzlePg(new Pool({ connectionString: process.env.DATABASE_URL }), {
+      schema,
+    })
+  : (drizzlePglite(new PGlite("./data/local.db"), {
+      schema,
+    }) as unknown as NodePgDatabase<typeof schema>));

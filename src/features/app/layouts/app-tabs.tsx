@@ -26,7 +26,6 @@ export function AppTabs() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <AppHeader />
-
       <div className="sticky top-[57px] z-40 bg-background border-b border-border px-4 py-2">
         <div className="flex gap-2 max-w-420 mx-auto">
           <button
@@ -66,10 +65,12 @@ export function AppTabs() {
       </div>
 
       <main className="flex-1 w-full max-w-420 mx-auto p-4">
-        {activeTab === "scanner" && <ScannerWizard />}
-        {activeTab === "contacts" && (
+        <div className={activeTab === "scanner" ? "" : "hidden"}>
+          <ScannerWizard />
+        </div>
+        <div className={activeTab === "contacts" ? "" : "hidden"}>
           <ContactsGrid contacts={contacts} onMutated={refetchContacts} />
-        )}
+        </div>
       </main>
     </div>
   );

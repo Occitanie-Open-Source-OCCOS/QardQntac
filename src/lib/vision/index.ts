@@ -2,6 +2,7 @@ import { env } from "@/env";
 import type { ContactData } from "@/lib/types";
 import type { VisionProvider } from "./interface";
 import { AnthropicProvider } from "./providers/anthropic";
+import { CustomProvider } from "./providers/custom";
 import { GeminiProvider } from "./providers/gemini";
 import { OllamaProvider } from "./providers/ollama";
 import { OpenAIProvider } from "./providers/openai";
@@ -17,6 +18,8 @@ export function getVisionProvider(): VisionProvider {
 			return new AnthropicProvider();
 		case "gemini":
 			return new GeminiProvider();
+		case "custom":
+			return new CustomProvider();
 		default:
 			return new OllamaProvider();
 	}

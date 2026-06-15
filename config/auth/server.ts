@@ -102,8 +102,8 @@ const authServerConfig = {
           !emailConfig.isConfigured;
 
         if (isEmergency) {
-          console.log("\n--- EMERGENCY MAGIC LINK ---");
-          console.log(`To:   ${email}`);
+          console.log("\n--- MAGIC LINK ---");
+          console.log(`Account:   ${email}`);
           console.log(`Link: ${url}`);
           console.log("----------------------------\n");
           return;

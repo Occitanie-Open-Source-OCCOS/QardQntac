@@ -1,7 +1,5 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
-    const { runMigrations } = await import("@/utils/migration");
-    await runMigrations();
     if (!process.env.APP_SECRET) {
       const crypto = await import("node:crypto");
       const generatedSecret = crypto.randomBytes(32).toString("hex");
@@ -10,5 +8,23 @@ export async function register() {
       );
       process.env.APP_SECRET = generatedSecret;
     }
+    if (!process.env.DATABASE_URL) {
+      const { mkdirSync } = await import("node:fs");
+      mkdirSync("./data", { recursive: true });
+      if (
+        process.env.DISABLE_DB_WARN !== "true" &&
+        process.env.DISABLE_DB_WARN !== "1"
+      ) {
+        console.warn(
+          "WARNING: DATABASE_URL is not set. Falling back to embedded database (./data/local.db).",
+          "\nData persists between restarts but is NOT suitable for production.",
+          "\nTo disable this warning, set DISABLE_DB_WARN=true in your .env\n",
+        );
+      }
+    }
+    const { runMigrations } = await import("@/utils/migration");
+    await runMigrations();
+    const { checkVisionProvider } = await import("@/lib/vision/check");
+    await checkVisionProvider();
   }
 }

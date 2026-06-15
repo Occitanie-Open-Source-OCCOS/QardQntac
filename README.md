@@ -60,13 +60,16 @@ services:
     environment:
       APP_URL: http://localhost:3000
       APP_SECRET: changeme   # replace with: openssl rand -base64 32
-      DATABASE_URL: postgres://user:password@db:5432/db
+      DATABASE_URL: postgres://user:password@db:5432/db   # optional — omit to use the embedded database
       OLLAMA_BASE_URL: http://ollama:11434
       OLLAMA_MODEL: llama3.2-vision
+    volumes:
+      - app_data:/app/data   # embedded fallback database (only used if DATABASE_URL is not set)
     depends_on:
       db:
         condition: service_healthy
 
+  # optional — only needed if you want to use a local PostgreSQL database instead of the embedded one
   db:
     image: postgres:16-alpine
     environment:
@@ -85,6 +88,13 @@ services:
     image: ollama/ollama
     volumes:
       - ollama_data:/root/.ollama
+    entrypoint: >
+      /bin/sh -c "
+      ollama serve &
+      until ollama list 2>/dev/null; do sleep 1; done &&
+      ollama pull $${OLLAMA_MODEL:-llama3.2-vision} &&
+      wait
+      "
     # Uncomment to use a GPU:
     # deploy:
     #   resources:
@@ -97,6 +107,7 @@ services:
 volumes:
   postgres_data:
   ollama_data:
+  app_data:
 ```
 
 ### 2. Start the stack
@@ -105,17 +116,30 @@ volumes:
 docker compose up -d
 ```
 
-### 3. Pull the vision model
+The Ollama container automatically pulls the configured model on first start. First boot takes a few minutes while the model downloads.
 
-```bash
-docker compose exec ollama ollama pull llama3.2-vision
-```
+> For lower-spec machines, set `OLLAMA_MODEL=moondream` in the `app` service environment — the pull will use that value automatically.
 
-> For lower-spec machines, use `moondream` (~1.7 GB) instead and set `OLLAMA_MODEL=moondream`.
-
-### 4. Open the app
+### 3. Open the app
 
 Go to [http://localhost:3000](http://localhost:3000). The first account created becomes the administrator.
+
+---
+
+## Run the app container only
+
+If you already have PostgreSQL and Ollama running elsewhere:
+
+```bash
+docker run -d \
+  --name qardqntac \
+  -p 3000:80 \
+  -v qardqntac_data:/app/data \
+  -e APP_URL=http://localhost:3000 \
+  occos/qardqntac:latest
+```
+
+> On Linux, add `--add-host=host.docker.internal:host-gateway` to resolve the host machine from inside the container.
 
 ---
 
@@ -171,7 +195,6 @@ All configuration is done through environment variables in your `.env` file.
 | Variable | Description |
 |---|---|
 | `APP_URL` | The URL where your app is accessible (e.g. `https://cards.example.com`) |
-| `DATABASE_URL` | PostgreSQL connection string |
 | `APP_SECRET` | Random secret key — generate with `openssl rand -base64 32` |
 
 ### SMTP (optional)
@@ -208,6 +231,9 @@ QardQntac uses magic links to sign in. If SMTP is configured, the link is sent b
 | `AUTH_WHITELISTED_DOMAINS` | Comma-separated list of allowed email domains (e.g. `company.com,partner.org`). Leave empty to allow any domain. | *(all allowed)* |
 | `AUTH_ALLOW_REGISTRATION` | Set to `false` to prevent new accounts from being created | `true` |
 | `AUTORIZED_DOMAINS` | Additional trusted origins for CORS (comma-separated URLs) | — |
+| `DATABASE_URL` | PostgreSQL connection string. If omitted, falls back to an embedded database stored in `./data/local.db` — not suitable for production |
+| `DISABLE_DB_WARN` | Set to `true` to suppress the startup warning when `DATABASE_URL` is not set |
+
 
 ---
 
@@ -215,7 +241,7 @@ QardQntac uses magic links to sign in. If SMTP is configured, the link is sent b
 
 **The camera scanner requires HTTPS.** Browsers block access to the device camera on plain `http://` pages (except `localhost`). To use QardQntac on a phone or tablet, the app must be served over HTTPS with a valid certificate.
 
-### Using Traefik (recommended for self-hosting)
+### Using Traefik (recommended)
 
 [Traefik](https://traefik.io) is a reverse proxy that automatically provisions Let's Encrypt certificates. A minimal setup with Docker Compose:
 
@@ -245,19 +271,13 @@ services:
       - traefik.http.routers.qardqntac.tls.certresolver=le
 ```
 
-### Alternatives
-
-- **Caddy** — also handles automatic certificates with minimal config
-- **nginx + Certbot** — more manual but widely documented
-- **Cloudflare Tunnel** — works behind NAT, no open ports required
-
 > For local development on desktop, `http://localhost:3000` works fine. The camera restriction only applies to real devices accessed over a network.
 
 ---
 
 ## Setting up an AI provider
 
-### Option A — Ollama (local, no internet required)
+### Ollama
 
 Ollama runs AI models directly on your server. No API key needed, fully private.
 
@@ -281,7 +301,7 @@ OLLAMA_MODEL=llama3.2-vision
 
 > `llama3.2-vision` requires ~5 GB of GPU/RAM. For lower-spec machines, try `moondream` (~1.7 GB) or `minicpm-v`.
 
-### Option B — OpenAI
+### OpenAI
 
 ```
 VISION_PROVIDER=openai
@@ -289,7 +309,7 @@ OPENAI_API_KEY=sk-...
 OPENAI_MODEL=gpt-4o
 ```
 
-### Option C — Anthropic
+### Anthropic
 
 ```
 VISION_PROVIDER=anthropic
@@ -297,7 +317,7 @@ ANTHROPIC_API_KEY=sk-ant-...
 ANTHROPIC_MODEL=claude-3-5-sonnet-20241022
 ```
 
-### Option D — Google Gemini
+### Google Gemini
 
 ```
 VISION_PROVIDER=gemini
@@ -319,16 +339,6 @@ CardDAV is the standard protocol used by contact apps (iOS Contacts, Android, Ne
 | **Radicale** | `http://host:5232/USERNAME/contacts/` |
 | **Baikal** | `http://host/baikal/dav.php/addressbooks/USERNAME/default/` |
 | **Custom** | Any valid CardDAV address book URL |
-
-### How to add a provider
-
-1. Open the **Contacts** tab in the app
-2. Click the settings icon (⚙) next to the search bar
-3. Click **Add provider**, choose your server type and fill in the URL, username, and password
-4. Click **Test connection** to verify
-5. Save — the provider is now available when syncing contacts
-
-You can add multiple providers and choose which one to use per contact when syncing.
 
 ### Tags and CardDAV
 
