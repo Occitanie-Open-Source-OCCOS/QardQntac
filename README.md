@@ -126,6 +126,23 @@ Go to [http://localhost:3000](http://localhost:3000). The first account created 
 
 ---
 
+## Run the app container only
+
+If you already have PostgreSQL and Ollama running elsewhere:
+
+```bash
+docker run -d \
+  --name qardqntac \
+  -p 3000:80 \
+  -v qardqntac_data:/app/data \
+  -e APP_URL=http://localhost:3000 \
+  occos/qardqntac:latest
+```
+
+> On Linux, add `--add-host=host.docker.internal:host-gateway` to resolve the host machine from inside the container.
+
+---
+
 ## Installation (from source)
 
 ### 1. Clone the repository
