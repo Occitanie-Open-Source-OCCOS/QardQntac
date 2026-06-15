@@ -42,4 +42,4 @@ COPY --from=builder --chown=nextjs:nodejs /app/db ./db
 RUN mkdir -p /app/data .next
 
 EXPOSE 80
-CMD ["node", "server.js"]
+CMD ["/app/server.js"]
