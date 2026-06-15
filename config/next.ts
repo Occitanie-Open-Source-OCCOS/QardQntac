@@ -10,11 +10,6 @@ export const nextConfig: NextConfig = withNextIntl({
   swcMinify: false,
   transpilePackages: ["@electric-sql/pglite"],
   cacheComponents: false,
-  serverExternalPackages: ["@electric-sql/pglite"],
-  outputFileTracingIncludes: {
-    "/**": ["./node_modules/@electric-sql/pglite/**"],
-  },
-
   experimental: {
     serverActions: {
       bodySizeLimit: "8mb",
