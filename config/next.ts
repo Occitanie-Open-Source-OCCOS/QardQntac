@@ -7,7 +7,6 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n.ts");
 export const nextConfig: NextConfig = withNextIntl({
   output: "standalone",
   images: {},
-  swcMinify: false,
   transpilePackages: ["@electric-sql/pglite"],
   cacheComponents: false,
   experimental: {
