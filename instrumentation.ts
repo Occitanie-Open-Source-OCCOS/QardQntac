@@ -8,19 +8,16 @@ export async function register() {
       );
       process.env.APP_SECRET = generatedSecret;
     }
-    if (!process.env.DATABASE_URL) {
-      const { mkdirSync } = await import("node:fs");
-      mkdirSync("./data", { recursive: true });
-      if (
-        process.env.DISABLE_DB_WARN !== "true" &&
-        process.env.DISABLE_DB_WARN !== "1"
-      ) {
-        console.warn(
-          "WARNING: DATABASE_URL is not set. Falling back to embedded database (./data/local.db).",
-          "\nData persists between restarts but is NOT suitable for production.",
-          "\nTo disable this warning, set DISABLE_DB_WARN=true in your .env\n",
-        );
-      }
+    if (
+      !process.env.DATABASE_URL &&
+      process.env.DISABLE_DB_WARN !== "true" &&
+      process.env.DISABLE_DB_WARN !== "1"
+    ) {
+      console.warn(
+        "WARNING: DATABASE_URL is not set. Falling back to embedded database (./data/local.db).",
+        "\nData persists between restarts but is NOT suitable for production.",
+        "\nTo disable this warning, set DISABLE_DB_WARN=true in your .env\n",
+      );
     }
     const { runMigrations } = await import("@/utils/migration");
     await runMigrations();
