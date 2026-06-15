@@ -148,7 +148,7 @@ docker run -d \
 ### 1. Clone the repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/Occitanie-Open-Source-OCCOS/QardQntac
 cd qardqntac
 ```
 
