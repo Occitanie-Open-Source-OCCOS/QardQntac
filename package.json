@@ -23,6 +23,7 @@
     "@base-ui/react": "^1.5.0",
     "@better-auth/i18n": "^1.6.11",
     "@cap.js/widget": "^0.1.53",
+    "@electric-sql/pglite": "^0.5.2",
     "@faker-js/faker": "^10.4.0",
     "@hookform/resolvers": "^5.4.0",
     "@next/third-parties": "16.2.6",

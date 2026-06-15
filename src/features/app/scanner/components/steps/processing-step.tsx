@@ -12,13 +12,20 @@ interface ProcessingStepProps {
 	onError: (message: string) => void;
 }
 
-async function fileToDataUrl(file: File): Promise<string> {
-	return new Promise((resolve, reject) => {
-		const reader = new FileReader();
-		reader.readAsDataURL(file);
-		reader.onload = () => resolve(reader.result as string);
-		reader.onerror = reject;
-	});
+const MAX_PX = 1920;
+const JPEG_QUALITY = 0.82;
+
+async function compressImage(file: File): Promise<string> {
+	const bitmap = await createImageBitmap(file);
+	const scale = Math.min(1, MAX_PX / Math.max(bitmap.width, bitmap.height));
+	const w = Math.round(bitmap.width * scale);
+	const h = Math.round(bitmap.height * scale);
+	const canvas = document.createElement("canvas");
+	canvas.width = w;
+	canvas.height = h;
+	canvas.getContext("2d")!.drawImage(bitmap, 0, 0, w, h);
+	bitmap.close();
+	return canvas.toDataURL("image/jpeg", JPEG_QUALITY);
 }
 
 export function ProcessingStep({ file, onDone, onError }: ProcessingStepProps) {
@@ -30,7 +37,7 @@ export function ProcessingStep({ file, onDone, onError }: ProcessingStepProps) {
 		let cancelled = false;
 		async function run() {
 			try {
-				const imageDataUrl = await fileToDataUrl(file);
+				const imageDataUrl = await compressImage(file);
 				if (cancelled) return;
 				const imageBase64 = imageDataUrl.split(",")[1];
 				const result = await executeAsync({ imageBase64 });
