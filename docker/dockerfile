@@ -1,4 +1,4 @@
-FROM node:24-alpine AS base
+FROM node:22.21.0-alpine AS base
 RUN apk add --no-cache libc6-compat
 RUN corepack enable pnpm
 
@@ -22,11 +22,13 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ENV CI=true
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV SKIP_ENV_VALIDATION=1
 RUN pnpm build
 
-FROM node:24-alpine AS prod
+FROM base AS prod
+
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -42,9 +44,12 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/db ./db
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@electric-sql /app/node_modules/@electric-sql
 
 RUN mkdir -p /app/data .next \
  && chown nextjs:nodejs /app/data .next
+
+ RUN rm -f /app/data/local.db/postmaster.pid
 
 RUN apk del apk-tools busybox-binsh \
  && ln -sf /bin/busybox /bin/sh || true

@@ -7,20 +7,12 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n.ts");
 export const nextConfig: NextConfig = withNextIntl({
   output: "standalone",
   images: {},
-  transpilePackages: ["@electric-sql/pglite"],
+  serverExternalPackages: ["@electric-sql/pglite"],
   cacheComponents: false,
   experimental: {
     serverActions: {
       bodySizeLimit: "8mb",
     },
-  },
-  webpack(config) {
-    config.experiments = {
-      ...config.experiments,
-      asyncWebAssembly: true,
-      layers: true,
-    };
-    return config;
   },
   logging: {
     browserToTerminal: false,
