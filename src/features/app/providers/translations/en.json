@@ -16,5 +16,9 @@
   "pick_provider": "Choose a provider",
   "no_providers": "No providers configured",
   "error_generic": "Error",
-  "error_network": "Network error"
+  "error_network": "Network error",
+  "errors": {
+    "provider_not_found": "Provider not found",
+    "password_required": "Password required for new provider"
+  }
 }

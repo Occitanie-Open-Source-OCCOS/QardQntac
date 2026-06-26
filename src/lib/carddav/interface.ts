@@ -8,9 +8,6 @@ export type CardDavCredentials = {
 
 export interface CardDavProvider {
 	readonly type: string;
-	readonly name: string;
-	readonly urlPlaceholder: string;
-	readonly urlHint: string;
 
 	testConnection(creds: CardDavCredentials): Promise<void>;
 	saveContact(vcard: string, bookHref: string, creds: CardDavCredentials, remoteId?: string): Promise<string>;

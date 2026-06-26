@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-	const queryClient = new QueryClient();
+	const [queryClient] = React.useState(() => new QueryClient());
 
 	return (
 		<QueryClientProvider client={queryClient}>

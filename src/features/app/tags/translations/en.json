@@ -13,5 +13,9 @@
 	"deleted_toast": "Tag deleted",
 	"updated_toast": "Tag updated",
 	"tag_label": "Tags",
-	"error_generic": "Error"
+	"error_generic": "Error",
+	"errors": {
+		"contact_not_found": "Contact not found",
+		"invalid_tag": "Invalid tag"
+	}
 }

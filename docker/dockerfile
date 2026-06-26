@@ -49,8 +49,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@electric-sql /app/n
 RUN mkdir -p /app/data .next \
  && chown nextjs:nodejs /app/data .next
 
- RUN rm -f /app/data/local.db/postmaster.pid
-
 RUN apk del apk-tools busybox-binsh \
  && ln -sf /bin/busybox /bin/sh || true
 

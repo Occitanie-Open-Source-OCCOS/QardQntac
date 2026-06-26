@@ -4,9 +4,6 @@ import type { CardDavCredentials, CardDavProvider } from "../interface";
 
 export class CustomProvider implements CardDavProvider {
 	readonly type = "custom";
-	readonly name = "Custom";
-	readonly urlPlaceholder = "https://carddav.example.com/addressbooks/user/contacts/";
-	readonly urlHint = "CardDAV URL";
 
 	async testConnection(creds: CardDavCredentials): Promise<void> {
 		await http.discoverBooks(creds);

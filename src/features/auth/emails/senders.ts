@@ -20,6 +20,7 @@ export const sendMagicLinkEmail = async (to: string, { name, magicLink }: { name
 				greeting: tMagicLink("greeting"),
 				waitingConfirmation: tMagicLink("waitingConfirmation"),
 				buttonLabel: tMagicLink("buttonLabel"),
+				fallbackLink: tMagicLink("fallbackLink"),
 				closing: tMagicLink("closing"),
 				teamPrefix: tMagicLink("teamPrefix"),
 			},

@@ -14,6 +14,9 @@
   "errors": {
     "sync_failed": "Échec de la synchronisation",
     "delete_failed": "Échec de la suppression",
-    "no_providers_configured": "Configurez d'abord un provider"
+    "no_providers_configured": "Configurez d'abord un provider",
+    "contact_exists": "Un contact avec ces coordonnées existe déjà.",
+    "contact_not_found": "Contact introuvable",
+    "missing_provider": "Provider manquant"
   }
 }

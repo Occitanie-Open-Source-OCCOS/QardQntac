@@ -2,37 +2,16 @@
 
 import { useTranslations } from "next-intl";
 import { useAction } from "next-safe-action/hooks";
-import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { ProviderSummary } from "@/db/schemas/contacts";
 import { saveProvider } from "@/features/app/providers/actions/save-provider.action";
 import { testProviderConnection } from "@/features/app/providers/actions/test-provider-connection.action";
-import type { ProviderType } from "@/lib/carddav";
-
-const PROVIDER_META: Record<ProviderType, { name: string; urlPlaceholder: string; urlHint: string }> = {
-	radicale: {
-		name: "Radicale",
-		urlPlaceholder: "http://host:5232/user/contacts/",
-		urlHint: "Radicale tourne généralement sur le port 5232",
-	},
-	baikal: {
-		name: "Baikal",
-		urlPlaceholder: "http://host/baikal/dav.php/addressbooks/user/default/",
-		urlHint: "URL de votre instance Baikal (dav.php/addressbooks/…)",
-	},
-	nextcloud: {
-		name: "Nextcloud",
-		urlPlaceholder: "https://nextcloud.example.com/remote.php/dav/addressbooks/users/username/contacts/",
-		urlHint: "Remplacez 'username' par votre identifiant Nextcloud",
-	},
-	custom: {
-		name: "Personnalisé",
-		urlPlaceholder: "https://carddav.example.com/addressbooks/user/contacts/",
-		urlHint: "URL complète du carnet d'adresses CardDAV",
-	},
-};
+import { providerSchema } from "@/features/app/providers/schemas/provider.schema";
+import type { ProviderSummary } from "@/db/schemas/contacts";
+import { useZodForm } from "@/features/common/hooks/use-zod-form";
+import { PROVIDER_TYPES, type ProviderType } from "@/lib/carddav";
 
 interface ProviderFormProps {
 	initial?: ProviderSummary | null;
@@ -42,13 +21,21 @@ interface ProviderFormProps {
 
 export function ProviderForm({ initial, onSaved, onCancel }: ProviderFormProps) {
 	const t = useTranslations("scanner.providers");
-	const [providerType, setProviderType] = useState<ProviderType>((initial?.type as ProviderType) ?? "radicale");
-	const [label, setLabel] = useState(initial?.label ?? "");
-	const [url, setUrl] = useState(initial?.url ?? "");
-	const [username, setUsername] = useState(initial?.username ?? "");
-	const [password, setPassword] = useState("");
 
-	const meta = PROVIDER_META[providerType];
+	const form = useZodForm({
+		schema: providerSchema,
+		defaultValues: {
+			id: initial?.id,
+			type: (initial?.type as ProviderType) ?? "radicale",
+			label: initial?.label ?? "",
+			url: initial?.url ?? "",
+			username: initial?.username ?? "",
+			password: "",
+		},
+		mode: "onChange",
+	});
+
+	const providerType = form.watch("type") as ProviderType;
 
 	const { execute: execSave, isPending: isSaving } = useAction(saveProvider, {
 		onSuccess: () => {
@@ -63,84 +50,106 @@ export function ProviderForm({ initial, onSaved, onCancel }: ProviderFormProps) 
 		onError: ({ error }) => toast.error(`${t("test_failed")}: ${error.serverError ?? t("error_network")}`),
 	});
 
-	const canTest = !!url && !!username && !!password;
-	const canSave = !!label && !!url && !!username && (!!initial || !!password);
+	const values = form.watch();
+	const canTest = !!values.url && !!values.username && !!values.password;
 
 	return (
-		<form
-			onSubmit={(e) => {
-				e.preventDefault();
-				execSave({
-					id: initial?.id,
-					type: providerType,
-					label,
-					url,
-					username,
-					password: password || undefined,
-				});
-			}}
+		<Form
+			form={form}
 			className="flex flex-col gap-3"
+			onSubmit={(v) => execSave({ ...v, password: v.password || undefined })}
 		>
-			<div className="flex flex-col md:flex-row gap-1">
-				{(["radicale", "baikal", "nextcloud", "custom"] as ProviderType[]).map((pt) => (
-					<button
-						key={pt}
-						type="button"
-						onClick={() => setProviderType(pt)}
-						className={`flex-1 py-1.5 text-xs font-medium rounded-lg border transition-colors ${
-							providerType === pt
-								? "bg-primary text-primary-foreground border-primary"
-								: "bg-background text-muted-foreground border-border hover:border-primary"
-						}`}
-					>
-						{PROVIDER_META[pt].name}
-					</button>
-				))}
-			</div>
+			<FormField
+				control={form.control}
+				name="type"
+				render={({ field }) => (
+					<FormItem className="space-y-1">
+						<div className="flex flex-col md:flex-row gap-1">
+							{PROVIDER_TYPES.map((pt) => (
+								<button
+									key={pt}
+									type="button"
+									onClick={() => field.onChange(pt)}
+									className={`flex-1 py-1.5 text-xs font-medium rounded-lg border capitalize transition-colors ${
+										field.value === pt
+											? "bg-primary text-primary-foreground border-primary"
+											: "bg-background text-muted-foreground border-border hover:border-primary"
+									}`}
+								>
+									{pt}
+								</button>
+							))}
+						</div>
+					</FormItem>
+				)}
+			/>
 
-			<div className="flex flex-col gap-1">
-				<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("label")}</label>
-				<Input
-					type="text"
-					value={label}
-					onChange={(e) => setLabel(e.target.value)}
-					placeholder={meta.name}
-					className="bg-background h-10 px-3 py-2 text-sm"
-				/>
-			</div>
+			<FormField
+				control={form.control}
+				name="label"
+				render={({ field }) => (
+					<FormItem className="space-y-1">
+						<FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+							{t("label")}
+						</FormLabel>
+						<FormControl>
+							<Input type="text" className="bg-background h-10 px-3 py-2 text-sm" {...field} />
+						</FormControl>
+						<FormMessage />
+					</FormItem>
+				)}
+			/>
 
-			<div className="flex flex-col gap-1">
-				<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">URL</label>
-				<Input
-					type="url"
-					value={url}
-					onChange={(e) => setUrl(e.target.value)}
-					placeholder={meta.urlPlaceholder}
-					className="bg-background h-10 px-3 py-2 text-sm"
-				/>
-				<p className="text-xs text-muted-foreground">{meta.urlHint}</p>
-			</div>
+			<FormField
+				control={form.control}
+				name="url"
+				render={({ field }) => (
+					<FormItem className="space-y-1">
+						<FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">URL</FormLabel>
+						<FormControl>
+							<Input type="url" className="bg-background h-10 px-3 py-2 text-sm" {...field} />
+						</FormControl>
+						<FormMessage />
+					</FormItem>
+				)}
+			/>
 
-			<div className="flex flex-col gap-1">
-				<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("username")}</label>
-				<Input
-					type="text"
-					value={username}
-					onChange={(e) => setUsername(e.target.value)}
-					className="bg-background h-10 px-3 py-2 text-sm"
-				/>
-			</div>
+			<FormField
+				control={form.control}
+				name="username"
+				render={({ field }) => (
+					<FormItem className="space-y-1">
+						<FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+							{t("username")}
+						</FormLabel>
+						<FormControl>
+							<Input type="text" className="bg-background h-10 px-3 py-2 text-sm" {...field} />
+						</FormControl>
+						<FormMessage />
+					</FormItem>
+				)}
+			/>
 
-			<div className="flex flex-col gap-1">
-				<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("password")}</label>
-				<Input
-					type="password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					placeholder={initial ? "••••••••" : ""}
-					className="bg-background h-10 px-3 py-2 text-sm"
-				/>
-			</div>
+			<FormField
+				control={form.control}
+				name="password"
+				render={({ field }) => (
+					<FormItem className="space-y-1">
+						<FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+							{t("password")}
+						</FormLabel>
+						<FormControl>
+							<Input
+								type="password"
+								placeholder={initial ? "••••••••" : ""}
+								className="bg-background h-10 px-3 py-2 text-sm"
+								{...field}
+							/>
+						</FormControl>
+						<FormMessage />
+					</FormItem>
+				)}
+			/>
 
 			<div className="flex flex-col md:flex-row gap-2 mt-1">
 				<Button
@@ -148,17 +157,28 @@ export function ProviderForm({ initial, onSaved, onCancel }: ProviderFormProps) 
 					variant="outline"
 					size="sm"
 					disabled={!canTest || isTesting}
-					onClick={() => execTest({ type: providerType, url, username, password })}
+					onClick={() =>
+						execTest({
+							type: providerType,
+							url: values.url,
+							username: values.username,
+							password: values.password ?? "",
+						})
+					}
 				>
 					{isTesting ? "…" : t("test_btn")}
 				</Button>
 				<Button type="button" variant="ghost" size="sm" onClick={onCancel}>
 					{t("cancel_btn")}
 				</Button>
-				<Button type="submit" size="sm" disabled={!canSave || isSaving}>
+				<Button
+					type="submit"
+					size="sm"
+					disabled={!form.formState.isValid || (!initial && !values.password) || isSaving}
+				>
 					{t("save_btn")}
 				</Button>
 			</div>
-		</form>
+		</Form>
 	);
 }

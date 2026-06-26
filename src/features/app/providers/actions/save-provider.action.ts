@@ -1,6 +1,7 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { userCardDavProviders } from "@/db/schemas";
 import { anyAuthenticatedAction } from "@/lib/actions";
@@ -18,13 +19,14 @@ export const saveProvider = anyAuthenticatedAction
 		}),
 	)
 	.action(async ({ parsedInput: { id, type, label, url, username, password }, ctx: { userId } }) => {
+		const t = await getTranslations("providers.errors");
 		if (id) {
 			const [existing] = await db
 				.select({ id: userCardDavProviders.id })
 				.from(userCardDavProviders)
 				.where(and(eq(userCardDavProviders.id, id), eq(userCardDavProviders.userId, userId)))
 				.limit(1);
-			if (!existing) throw new Error("Provider not found");
+			if (!existing) throw new Error(t("provider_not_found"));
 			const updates: Record<string, unknown> = {
 				type,
 				label,
@@ -39,7 +41,7 @@ export const saveProvider = anyAuthenticatedAction
 				.where(and(eq(userCardDavProviders.id, id), eq(userCardDavProviders.userId, userId)));
 			return { id };
 		}
-		if (!password) throw new Error("Password required for new provider");
+		if (!password) throw new Error(t("password_required"));
 		const [row] = await db
 			.insert(userCardDavProviders)
 			.values({

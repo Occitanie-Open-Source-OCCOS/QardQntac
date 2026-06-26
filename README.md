@@ -18,6 +18,12 @@
 
 Everything runs on your own server. No data leaves your infrastructure unless you choose a cloud AI provider.
 
+### See it in action
+
+| Scan & extract | Save to your contacts |
+|:---:|:---:|
+| <img src=".github/assets/process-mobile.gif" width="260" alt="Scanning a card and extracting fields with AI" /> | <img src=".github/assets/add-to-contact.gif" width="260" alt="Saving the extracted contact to the address book" /> |
+
 ---
 
 ## Features
@@ -31,6 +37,20 @@ Everything runs on your own server. No data leaves your infrastructure unless yo
 - **Access control** — restrict sign-ups to specific email domains, or disable registration entirely
 - **Multi-language** — English and French interface, configurable via environment variable
 - **Self-hosted** — runs on any Linux server with Docker and Node.js
+
+---
+
+## Screenshots
+
+| | Desktop | Mobile |
+|---|:---:|:---:|
+| **Sign in** | <img src=".github/assets/login-desktop.png" width="420" alt="Sign in (desktop)" /> | <img src=".github/assets/login-mobile.png" width="200" alt="Sign in (mobile)" /> |
+| **Scanner** | <img src=".github/assets/scanner-desktop.png" width="420" alt="Scanner (desktop)" /> | <img src=".github/assets/scanner-mobile.png" width="200" alt="Scanner (mobile)" /> |
+| **Capture** | <img src=".github/assets/scanner-capture-desktop.png" width="420" alt="Capture (desktop)" /> | <img src=".github/assets/scanner-capture-mobile.png" width="200" alt="Capture (mobile)" /> |
+| **Review & edit** | <img src=".github/assets/scanner-review-desktop.png" width="420" alt="Review extracted fields (desktop)" /> | <img src=".github/assets/scanner-review-mobile.png" width="200" alt="Review extracted fields (mobile)" /> |
+| **Contacts** | <img src=".github/assets/contacts-desktop.png" width="420" alt="Contact list (desktop)" /> | <img src=".github/assets/contacts-mobile.png" width="200" alt="Contact list (mobile)" /> |
+| **Add a CardDAV provider** | <img src=".github/assets/provider-add-desktop.png" width="420" alt="Add a CardDAV provider (desktop)" /> | <img src=".github/assets/provider-add-mobile.png" width="200" alt="Add a CardDAV provider (mobile)" /> |
+| **Tags** | <img src=".github/assets/tags.png" width="420" alt="Color-coded tags" /> | |
 
 ---
 
