@@ -5,8 +5,6 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-// import { useCameraDetector } from "../../detection/use-camera-detector";
-// import { useCardDetector } from "../../detection/use-card-detector";
 import { CameraOverlay } from "../camera-overlay";
 import { CardValidationBadge } from "../card-validation-badge";
 
@@ -45,13 +43,6 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
     [stopStream],
   );
 
-  // Detection disabled — hooks kept for future re-enable
-  // const { validationState, isChecking } = useCardDetector(selectedFile);
-  // const { detected, progress } = useCameraDetector({
-  //   enabled: state === "streaming" && isCameraReady,
-  //   videoRef,
-  //   onCapture: handleCaptureFile,
-  // });
   const validationState = "idle" as const;
   const isChecking = false;
   const detected = false;
@@ -137,7 +128,7 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
         <h1 className="text-2xl font-black tracking-tight">{t("title")}</h1>
       </div>
 
-      <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-border shadow-sm bg-muted flex items-center justify-center">
+      <div className="relative w-full aspect-4/3 rounded-2xl overflow-hidden border border-border shadow-sm bg-muted flex items-center justify-center">
         {state === "streaming" ? (
           <>
             <video
@@ -174,7 +165,6 @@ export function CaptureStep({ onImageSelected }: CaptureStepProps) {
               alt={t("preview_alt")}
               className="w-full h-full object-cover"
             />
-            <CardValidationBadge state={validationState} />
           </>
         ) : (
           <div className="flex flex-col items-center gap-3">

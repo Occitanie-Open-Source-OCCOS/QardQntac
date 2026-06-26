@@ -4,12 +4,9 @@ import type { CardDavCredentials, CardDavProvider } from "../interface";
 
 export class BaikalProvider implements CardDavProvider {
 	readonly type = "baikal";
-	readonly name = "Baikal";
-	readonly urlPlaceholder = "http://host/baikal/dav.php/addressbooks/user/default/";
-	readonly urlHint = "URL Instance (dav.php/addressbooks/…)";
 
 	async testConnection(creds: CardDavCredentials): Promise<void> {
-		await http.discoverBooks(creds);
+		await http.testConnection(creds);
 	}
 
 	async saveContact(vcard: string, bookHref: string, creds: CardDavCredentials, remoteId?: string): Promise<string> {

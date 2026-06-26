@@ -4,12 +4,9 @@ import type { CardDavCredentials, CardDavProvider } from "../interface";
 
 export class NextcloudProvider implements CardDavProvider {
 	readonly type = "nextcloud";
-	readonly name = "Nextcloud";
-	readonly urlPlaceholder = "https://nextcloud.example.com/remote.php/dav/addressbooks/users/username/contacts/";
-	readonly urlHint = "Replace 'username' with your Nextcloud username";
 
 	async testConnection(creds: CardDavCredentials): Promise<void> {
-		await http.discoverBooks(creds);
+		await http.testConnection(creds);
 	}
 
 	async saveContact(vcard: string, bookHref: string, creds: CardDavCredentials, remoteId?: string): Promise<string> {

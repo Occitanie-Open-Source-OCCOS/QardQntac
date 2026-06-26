@@ -1,6 +1,7 @@
 "use server";
 
 import { and, eq, or } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { contacts } from "@/db/schemas";
 import { anyAuthenticatedAction } from "@/lib/actions";
@@ -34,7 +35,8 @@ export const saveContact = anyAuthenticatedAction
         .limit(1);
 
       if (existing.length > 0) {
-        throw new Error("Un contact avec ces coordonnées existe déjà.");
+        const t = await getTranslations("contacts.errors");
+        throw new Error(t("contact_exists"));
       }
     }
 

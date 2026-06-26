@@ -14,6 +14,9 @@
   "errors": {
     "sync_failed": "Sync failed",
     "delete_failed": "Delete failed",
-    "no_providers_configured": "Configure a provider first"
+    "no_providers_configured": "Configure a provider first",
+    "contact_exists": "A contact with these details already exists.",
+    "contact_not_found": "Contact not found",
+    "missing_provider": "Missing provider"
   }
 }

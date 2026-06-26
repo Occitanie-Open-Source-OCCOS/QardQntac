@@ -16,5 +16,9 @@
   "pick_provider": "Choisir un provider",
   "no_providers": "Aucun provider configuré",
   "error_generic": "Erreur",
-  "error_network": "Erreur réseau"
+  "error_network": "Erreur réseau",
+  "errors": {
+    "provider_not_found": "Provider introuvable",
+    "password_required": "Mot de passe requis pour un nouveau provider"
+  }
 }

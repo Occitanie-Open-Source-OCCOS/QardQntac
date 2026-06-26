@@ -6,6 +6,7 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n.ts");
 
 export const nextConfig: NextConfig = withNextIntl({
   output: "standalone",
+  devIndicators: false,
   images: {},
   serverExternalPackages: ["@electric-sql/pglite"],
   cacheComponents: false,
@@ -17,7 +18,7 @@ export const nextConfig: NextConfig = withNextIntl({
   logging: {
     browserToTerminal: false,
   },
-  allowedDevOrigins: ["192.168.1.213", "192.168.1.204"],
+  allowedDevOrigins: [],
   async headers() {
     return [
       {

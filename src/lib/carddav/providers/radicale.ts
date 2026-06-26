@@ -4,12 +4,9 @@ import type { CardDavCredentials, CardDavProvider } from "../interface";
 
 export class RadicaleProvider implements CardDavProvider {
 	readonly type = "radicale";
-	readonly name = "Radicale";
-	readonly urlPlaceholder = "http://host:5232/user/contacts/";
-	readonly urlHint = "URL Instance (user/contacts/…)";
 
 	async testConnection(creds: CardDavCredentials): Promise<void> {
-		await http.discoverBooks(creds);
+		await http.testConnection(creds);
 	}
 
 	async saveContact(vcard: string, bookHref: string, creds: CardDavCredentials, remoteId?: string): Promise<string> {

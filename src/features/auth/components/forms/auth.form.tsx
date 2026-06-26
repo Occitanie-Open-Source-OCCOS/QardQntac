@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/features/auth/hooks/use-auth";
 import { useZodForm } from "@/features/common/hooks/use-zod-form";
 import { authSchema } from "../../schemas/auth.schema";
+import Image from "next/image";
 
 interface AuthFormProps {
   callbackURL?: string;
@@ -43,7 +44,13 @@ export function AuthForm({
   return (
     <div className="flex flex-col gap-10">
       <div>
-        <img src="/assets/logo.svg" alt="QardQntac" className="h-10 w-auto" />
+        <Image
+          width={24}
+          height={24}
+          src="/assets/logo.svg"
+          alt="QardQntac"
+          className="h-10 w-auto"
+        />
       </div>
       <div className="space-y-2">
         <h1 className="font-heading text-2xl font-bold tracking-tight">

@@ -11,6 +11,7 @@ import { TagPopover } from "@/features/app/tags/components/tag-popover";
 import { downloadVCard } from "@/lib/vcf";
 import { deleteContact } from "../actions/delete-contact.action";
 import { syncContact } from "../actions/sync-contact.action";
+import { cn } from "@/lib/utils";
 
 const AVATAR_COLORS = [
   "bg-violet-500",
@@ -97,7 +98,10 @@ export function ContactCard({
   return (
     <div className="bg-card border border-border rounded-xl p-3 flex flex-col items-center gap-2 text-center">
       <div
-        className={`size-12 rounded-full ${avatarColor} text-white flex items-center justify-center text-sm font-bold shrink-0`}
+        className={cn(
+          "size-12 rounded-full  text-white flex items-center justify-center text-sm font-bold shrink-0",
+          avatarColor,
+        )}
       >
         {initials}
       </div>
