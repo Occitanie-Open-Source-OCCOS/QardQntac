@@ -1,5 +1,8 @@
 export async function register() {
-  if (process.env.NEXT_RUNTIME === "nodejs") {
+  if (
+    process.env.NEXT_RUNTIME === "nodejs" &&
+    process.env.NEXT_PHASE !== "phase-production-build"
+  ) {
     if (!process.env.APP_SECRET) {
       const crypto = await import("node:crypto");
       const generatedSecret = crypto.randomBytes(32).toString("hex");
@@ -22,6 +25,13 @@ export async function register() {
     const { runMigrations } = await import("@/utils/migration");
     await runMigrations();
     const { checkVisionProvider } = await import("@/lib/vision/check");
-    await checkVisionProvider();
+    try {
+      await checkVisionProvider();
+    } catch (error) {
+      console.warn(
+        "WARNING: vision provider check failed at startup —",
+        error instanceof Error ? error.message : error,
+      );
+    }
   }
 }

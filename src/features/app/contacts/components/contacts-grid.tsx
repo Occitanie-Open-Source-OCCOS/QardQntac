@@ -1,4 +1,3 @@
-// src/features/app/contacts/components/contacts-grid.tsx
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
