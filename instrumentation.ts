@@ -22,8 +22,10 @@ export async function register() {
         "\nTo disable this warning, set DISABLE_DB_WARN=true in your .env\n",
       );
     }
+
     const { runMigrations } = await import("@/utils/migration");
     await runMigrations();
+
     const { checkVisionProvider } = await import("@/lib/vision/check");
     try {
       await checkVisionProvider();

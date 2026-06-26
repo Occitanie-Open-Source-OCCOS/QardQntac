@@ -1,21 +1,21 @@
 name: qardqntac-production
 
 services:
-  #   app:
-  #     build:
-  #       context: .
-  #       dockerfile: docker/dockerfile
-  #       target: prod
-  #     image: occos/qardqntac:latest
-  #     container_name: qardqntac-production-app
-  #     restart: unless-stopped
-  #     ports:
-  #       - "7658:80"
-  #     env_file:
-  #       - .env
-  #     depends_on:
-  #       db:
-  #         condition: service_healthy
+  app:
+    #     build:
+    #       context: .
+    #       dockerfile: docker/dockerfile
+    #       target: prod
+    image: occos/qardqntac:latest
+    container_name: qardqntac-production-app
+    restart: unless-stopped
+    ports:
+      - "7658:80"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
   db:
     image: postgres:16-alpine
     container_name: qardqntac-production-db
