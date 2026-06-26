@@ -51,6 +51,6 @@ export const saveProvider = anyAuthenticatedAction
 				password,
 				updatedAt: new Date(),
 			})
-			.returning({ id: userCardDavProviders.id });
+			.returning();
 		return { id: row.id };
 	});
