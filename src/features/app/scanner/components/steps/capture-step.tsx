@@ -6,7 +6,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CameraOverlay } from "../camera-overlay";
-import { CardValidationBadge } from "../card-validation-badge";
 
 interface CaptureStepProps {
   onImageSelected: (file: File) => void;
