@@ -52,7 +52,7 @@ export const env = createEnv({
     OPENAI_API_KEY: z.string().optional(),
     OPENAI_MODEL: z.string().default("gpt-4o"),
     ANTHROPIC_API_KEY: z.string().optional(),
-    ANTHROPIC_MODEL: z.string().default("claude-3-5-sonnet-20241022"),
+    ANTHROPIC_MODEL: z.string().default("claude-3-5-sonnet"),
     GEMINI_API_KEY: z.string().optional(),
     GEMINI_MODEL: z.string().default("gemini-1.5-flash"),
   },

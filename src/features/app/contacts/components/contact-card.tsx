@@ -1,4 +1,3 @@
-// src/features/app/contacts/components/contact-card.tsx
 "use client";
 
 import { DownloadIcon, RefreshCwIcon, Trash2Icon } from "lucide-react";

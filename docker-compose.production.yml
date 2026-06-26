@@ -2,9 +2,17 @@ name: qardqntac-production
 
 services:
   app:
-    container_name: qardqntac-production-app
+    #     build:
+    #       context: .
+    #       dockerfile: docker/dockerfile
+    #       target: prod
     image: occos/qardqntac:latest
+    container_name: qardqntac-production-app
     restart: unless-stopped
+    ports:
+      - "7658:80"
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
