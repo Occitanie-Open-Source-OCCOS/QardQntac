@@ -9,10 +9,10 @@ export async function runMigrations() {
     if (process.env.DATABASE_URL) {
       //@ts-ignore
       const { migrate } = await import("drizzle-orm/node-postgres/migrator");
-      await migrate(db as any, { migrationsFolder });
+      await migrate(db, { migrationsFolder });
     } else {
       const { migrate } = await import("drizzle-orm/pglite/migrator");
-      await migrate(db as any, { migrationsFolder });
+      await migrate(db, { migrationsFolder });
     }
     console.log("Migrations completed successfully.");
   } catch (error) {

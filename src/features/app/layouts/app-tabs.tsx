@@ -23,13 +23,21 @@ export function AppTabs() {
   return (
     <Tabs className="flex flex-col min-h-screen bg-background">
       <AppHeader />
-      <div className="bg-background border-b border-border px-4 py-1">
-        <TabsList className="w-full mx-auto h-auto p-1 items-stretch">
-          <TabsTrigger value="scanner">{t("scanner")}</TabsTrigger>
-          <TabsTrigger value="contacts">
+      <div className="bg-background border-b border-border px-4 py-2">
+        <TabsList className="w-full mx-auto h-auto items-stretch justify-start gap-2 rounded-lg bg-muted p-0">
+          <TabsTrigger
+            value="scanner"
+            className="flex-1 py-2 text-sm font-medium rounded-lg transition-colors data-active:bg-primary data-active:text-primary-foreground"
+          >
+            {t("scanner")}
+          </TabsTrigger>
+          <TabsTrigger
+            value="contacts"
+            className="group/trigger relative flex-1 py-2 text-sm font-medium rounded-lg transition-colors data-active:bg-primary data-active:text-primary-foreground"
+          >
             {t("contacts")}
             {contacts.length > 0 && (
-              <span className="ml-1.5 size-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center group-data-active/trigger:bg-primary-foreground group-data-active/trigger:text-primary">
+              <span className="absolute -top-1.5 -right-1.5 size-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center group-data-active/trigger:bg-background group-data-active/trigger:text-primary">
                 {contacts.length > 99 ? "99+" : contacts.length}
               </span>
             )}

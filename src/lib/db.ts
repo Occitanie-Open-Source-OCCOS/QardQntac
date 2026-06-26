@@ -28,4 +28,5 @@ function createClient(): NodePgDatabase<typeof schema> {
 }
 
 export const db: NodePgDatabase<typeof schema> =
+  // @ts-ignore
   globalThis.__db ?? (globalThis.__db = createClient());

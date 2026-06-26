@@ -6,7 +6,7 @@ export class BaikalProvider implements CardDavProvider {
 	readonly type = "baikal";
 
 	async testConnection(creds: CardDavCredentials): Promise<void> {
-		await http.discoverBooks(creds);
+		await http.testConnection(creds);
 	}
 
 	async saveContact(vcard: string, bookHref: string, creds: CardDavCredentials, remoteId?: string): Promise<string> {
