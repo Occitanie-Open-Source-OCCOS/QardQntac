@@ -102,10 +102,23 @@ export function ReviewStep({
       <div className="flex flex-col gap-3">
         <FormField
           control={form.control}
-          name="name"
+          name="firstname"
           render={({ field }) => (
             <FormItem className="space-y-1">
-              <FormLabel className={labelClass}>{t("name")}</FormLabel>
+              <FormLabel className={labelClass}>{t("firstname")}</FormLabel>
+              <FormControl>
+                <Input type="text" className={inputClass} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="lastname"
+          render={({ field }) => (
+            <FormItem className="space-y-1">
+              <FormLabel className={labelClass}>{t("lastname")}</FormLabel>
               <FormControl>
                 <Input type="text" className={inputClass} {...field} />
               </FormControl>

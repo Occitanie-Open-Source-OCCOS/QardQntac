@@ -2,7 +2,9 @@ import type { ContactData } from "@/lib/types";
 import { emptyContact } from "@/lib/types";
 
 const FIELD_ALIASES: Record<keyof ContactData, RegExp> = {
-  name: /\b(?:name|nom)\b/i,
+  firstname: /\b(?:firstname|first name|prénom|prenom|given)\b/i,
+  lastname: /\b(?:lastname|last name|nom de famille|surname|family)\b/i,
+  name: /\b(?:name|nom|full name)\b/i,
   title: /\b(?:title|titre|poste|position|role)\b/i,
   company: /\b(?:company|société|entreprise|organization|org)\b/i,
   email: /\b(?:email|e-mail|mail|courriel)\b/i,
@@ -52,6 +54,8 @@ export function parseModelOutput(raw: string): ContactData {
       };
       return {
         name: clean(parsed.name),
+        firstname: clean(parsed.firstname),
+        lastname: clean(parsed.lastname),
         title: clean(parsed.title),
         company: clean(parsed.company),
         email: clean(parsed.email),
@@ -65,4 +69,4 @@ export function parseModelOutput(raw: string): ContactData {
 }
 
 export const SYSTEM_PROMPT =
-  'You are a contact information extractor. Examine the image carefully. If the image does NOT contain a business card or readable contact information (e.g. it is a nature photo, a person, a landscape, or has no visible text), return {"name":"","title":"","company":"","email":"","phone":"","website":"","address":""}. If the image IS a business card, extract the information using these rules: (1) Extract all fields explicitly visible in the image. (2) If company is not printed but an email is present, infer the company name from the email domain (e.g. john@acme-corp.com → "Acme Corp"). (3) If website is not printed but an email is present, infer the website from the email domain (e.g. john@acme.com → "acme.com"). Only apply inference (2) and (3) when the field is otherwise empty. Return ONLY a valid JSON object with exactly these fields: name, title, company, email, phone, website, address. Use empty string "" for any field not present and not inferable. Never use placeholder text like "N/A", "not available", "unknown", or similar — only real values or empty string. Output only the JSON, no explanation.';
+  'You are a contact information extractor. Examine the image carefully. If the image does NOT contain a business card or readable contact information (e.g. it is a nature photo, a person, a landscape, or has no visible text), return {"name":"","firstname":"","lastname":"","title":"","company":"","email":"","phone":"","website":"","address":""}. If the image IS a business card, extract the information using these rules: (1) Extract all fields explicitly visible in the image. (2) For the person, set "name" to the full name exactly as printed, and split it into "firstname" (given name) and "lastname" (family name); if the split is unclear, put the whole name in "lastname" and leave "firstname" empty — do not guess. (3) If company is not printed but an email is present, infer the company name from the email domain (e.g. john@acme-corp.com → "Acme Corp"). (4) If website is not printed but an email is present, infer the website from the email domain (e.g. john@acme.com → "acme.com"). Only apply inference (3) and (4) when the field is otherwise empty. Return ONLY a valid JSON object with exactly these fields: name, firstname, lastname, title, company, email, phone, website, address. Use empty string "" for any field not present and not inferable. Never use placeholder text like "N/A", "not available", "unknown", or similar — only real values or empty string. Output only the JSON, no explanation.';

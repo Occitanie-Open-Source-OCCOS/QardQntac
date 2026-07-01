@@ -9,6 +9,7 @@ export function generateVCard(contact: ContactData, tagNames: string[] = []): st
 	const lines: string[] = [
 		"BEGIN:VCARD",
 		"VERSION:3.0",
+		`N:${e(contact.lastname)};${e(contact.firstname)};;;`,
 		`FN:${e(contact.name)}`,
 		contact.company ? `ORG:${e(contact.company)}` : null,
 		contact.title ? `TITLE:${e(contact.title)}` : null,

@@ -25,6 +25,8 @@ export const contacts = pgTable("contacts", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull(),
   name: text("name").notNull().default(""),
+  firstname: text("firstname").notNull().default(""),
+  lastname: text("lastname").notNull().default(""),
   title: text("title").notNull().default(""),
   company: text("company").notNull().default(""),
   email: text("email").notNull().default(""),
