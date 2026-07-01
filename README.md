@@ -436,7 +436,7 @@ src/
   lib/            Shared utilities (CardDAV client, vision providers, vCard…)
 ```
 
-### Guidelines
+###  Guidelines
 
 - Run `pnpm check` before submitting — the project uses [Biome](https://biomejs.dev) for linting and formatting
 - Translations live in `src/features/[feature]/translations/fr.json` and `en.json` — add keys for both locales
