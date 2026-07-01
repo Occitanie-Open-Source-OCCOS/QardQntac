@@ -20,6 +20,8 @@
   "review": {
     "title": "Review information",
     "name": "Name",
+    "firstname": "First name",
+    "lastname": "Last name",
     "title_field": "Job title",
     "company": "Company",
     "email": "Email",

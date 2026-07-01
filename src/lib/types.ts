@@ -1,5 +1,7 @@
 export interface ContactData {
 	name: string;
+	firstname: string;
+	lastname: string;
 	title: string;
 	company: string;
 	email: string;
@@ -9,7 +11,7 @@ export interface ContactData {
 }
 
 export function emptyContact(): ContactData {
-	return { name: "", title: "", company: "", email: "", phone: "", website: "", address: "" };
+	return { name: "", firstname: "", lastname: "", title: "", company: "", email: "", phone: "", website: "", address: "" };
 }
 
 export interface AddressBook {

@@ -20,6 +20,8 @@
   "review": {
     "title": "Vérifier les informations",
     "name": "Nom",
+    "firstname": "Prénom",
+    "lastname": "Nom",
     "title_field": "Poste",
     "company": "Société",
     "email": "Email",
