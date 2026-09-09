@@ -2,10 +2,13 @@
 
 import { useQuery } from "@tanstack/react-query";
 import {
+  columnFilteringFeature,
   createColumnHelper,
-  getCoreRowModel,
-  getFilteredRowModel,
-  useReactTable,
+  createFilteredRowModel,
+  filterFn_includesString,
+  globalFilteringFeature,
+  tableFeatures,
+  useTable,
 } from "@tanstack/react-table";
 import { SettingsIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -20,13 +23,20 @@ import { listTags } from "@/features/app/tags/actions/list-tags.action";
 import { TagChipsFilter } from "@/features/app/tags/components/tag-chips-filter";
 import { ContactCard } from "./contact-card";
 
-const columnHelper = createColumnHelper<Contact>();
+const features = tableFeatures({
+  columnFilteringFeature,
+  globalFilteringFeature,
+  filteredRowModel: createFilteredRowModel(),
+  filterFns: { includesString: filterFn_includesString },
+});
 
-const columns = [
+const columnHelper = createColumnHelper<typeof features, Contact>();
+
+const columns = columnHelper.columns([
   columnHelper.accessor("name", {}),
   columnHelper.accessor("company", {}),
   columnHelper.accessor("email", {}),
-];
+]);
 
 interface ContactsGridProps {
   contacts: Contact[];
@@ -84,11 +94,10 @@ export function ContactsGrid({ contacts, onMutated }: ContactsGridProps) {
     [contacts, selectedTagIds, contactTagMap],
   );
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data: tagFilteredContacts,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     state: { globalFilter },
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: "includesString",
