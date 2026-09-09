@@ -52,6 +52,7 @@ const authServerConfig = {
       generateId: () => {
         return crypto.randomUUID();
       },
+      joins: true,
     },
   },
   databaseHooks: {
@@ -359,9 +360,6 @@ const authServerConfig = {
     urlConfig.baseUrl || "http://localhost:3000" || "https://localhost:3000",
   ],
   secret: env.APP_SECRET,
-  experimental: {
-    joins: true,
-  },
   rateLimit: {
     enabled: true,
     customRules: {
