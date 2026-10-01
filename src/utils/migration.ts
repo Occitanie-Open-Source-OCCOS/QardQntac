@@ -11,8 +11,8 @@ export async function runMigrations() {
       const { migrate } = await import("drizzle-orm/node-postgres/migrator");
       await migrate(db, { migrationsFolder });
     } else {
-      // @ts-expect-error - db is typed for node-postgres; the pglite migrator only runs when DATABASE_URL is unset
       const { migrate } = await import("drizzle-orm/pglite/migrator");
+      // @ts-expect-error - db exposes NodePgDatabase typing but is a PGlite client when DATABASE_URL is unset.
       await migrate(db, { migrationsFolder });
     }
     console.log("Migrations completed successfully.");
