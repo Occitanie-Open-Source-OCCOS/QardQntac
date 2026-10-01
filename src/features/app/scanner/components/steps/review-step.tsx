@@ -21,6 +21,7 @@ import { contactSchema } from "@/features/app/contacts/schemas/contact.schema";
 import { assignTags } from "@/features/app/tags/actions/assign-tags.action";
 import { listTags } from "@/features/app/tags/actions/list-tags.action";
 import { useZodForm } from "@/features/common/hooks/use-zod-form";
+import { useFieldArray } from "react-hook-form";
 import type { ContactData } from "@/lib/types";
 
 interface ReviewStepProps {
@@ -44,6 +45,11 @@ export function ReviewStep({
   const form = useZodForm({
     schema: contactSchema,
     defaultValues: data,
+  });
+
+  const { fields: phoneFields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "phones",
   });
 
   const { data: allTags = [] } = useQuery({
@@ -165,19 +171,75 @@ export function ReviewStep({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel className={labelClass}>{t("phone")}</FormLabel>
-              <FormControl>
-                <Input type="text" className={inputClass} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <fieldset className="min-w-0 space-y-3">
+          <legend className={labelClass}>{t("phone")}</legend>
+
+          {phoneFields.map((phoneField, index) => (
+            <div
+              key={phoneField.id}
+              className="space-y-2 rounded-lg border border-border p-3"
+            >
+              <FormField
+                control={form.control}
+                name={`phones.${index}.number` as const}
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel className={labelClass}>
+                      {t("phone_number")}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        className={inputClass}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name={`phones.${index}.label` as const}
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel className={labelClass}>
+                      {t("phone_label")}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        className={inputClass}
+                        placeholder={t("phone_label_placeholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isPending}
+                onClick={() => remove(index)}
+              >
+                {t("remove_phone")}
+              </Button>
+            </div>
+          ))}
+
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isPending}
+            onClick={() => append({ number: "", label: "" })}
+          >
+            {t("add_phone")}
+          </Button>
+        </fieldset>
         <FormField
           control={form.control}
           name="website"
