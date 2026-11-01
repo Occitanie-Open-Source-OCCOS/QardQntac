@@ -61,7 +61,7 @@
     "@tanstack/react-table": "^9.2.4",
     "@types/canvas-confetti": "^1.9.0",
     "@types/nodemailer": "^8.0.1",
-    "better-auth": "^1.7.3",
+    "better-auth": "^1.7.7",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
