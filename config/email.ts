@@ -8,7 +8,8 @@ export const emailConfig = {
 		? {
 				host: env.SMTP_HOST!,
 				port: env.SMTP_PORT!,
-				secure: env.NODE_ENV === "production",
+				// Implicit TLS only on 465; other ports (587, 1025…) upgrade via STARTTLS when offered.
+				secure: env.SMTP_PORT === 465,
 				auth: env.SMTP_USER ? { user: env.SMTP_USER, pass: env.SMTP_PASSWORD } : undefined,
 			}
 		: null,
