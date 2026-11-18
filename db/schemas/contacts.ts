@@ -1,5 +1,6 @@
 import {
   integer,
+  jsonb,
   pgTable,
   primaryKey,
   serial,
@@ -8,6 +9,8 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
+
+import type { PhoneNumber } from "@/lib/types";
 
 export const userCardDavProviders = pgTable("user_carddav_providers", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -30,7 +33,10 @@ export const contacts = pgTable("contacts", {
   title: text("title").notNull().default(""),
   company: text("company").notNull().default(""),
   email: text("email").notNull().default(""),
-  phone: text("phone").notNull().default(""),
+  phones: jsonb("phones")
+    .$type<PhoneNumber[]>()
+    .notNull()
+    .default([]),
   website: text("website").notNull().default(""),
   address: text("address").notNull().default(""),
   imageUrl: text("image_url"),

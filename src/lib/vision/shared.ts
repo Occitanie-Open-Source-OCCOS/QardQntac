@@ -1,39 +1,112 @@
-import type { ContactData } from "@/lib/types";
+import type { ContactData, PhoneNumber } from "@/lib/types";
 import { emptyContact } from "@/lib/types";
 
-const FIELD_ALIASES: Record<keyof ContactData, RegExp> = {
-  firstname: /\b(?:firstname|first name|prénom|prenom|given)\b/i,
-  lastname: /\b(?:lastname|last name|nom de famille|surname|family)\b/i,
-  name: /\b(?:name|nom|full name)\b/i,
-  title: /\b(?:title|titre|poste|position|role)\b/i,
-  company: /\b(?:company|société|entreprise|organization|org)\b/i,
-  email: /\b(?:email|e-mail|mail|courriel)\b/i,
-  phone: /\b(?:phone|téléphone|tel|mobile|fax)\b/i,
-  website: /\b(?:website|site|url|web)\b/i,
-  address: /\b(?:address|adresse)\b/i,
+type ScalarField = Exclude<keyof ContactData, "phones">;
+
+const FIELD_ALIASES: Record<ScalarField, RegExp> = {
+  firstname: /^(?:firstname|first name|prénom|prenom|given|given name)$/i,
+  lastname: /^(?:lastname|last name|nom de famille|surname|family|family name)$/i,
+  name: /^(?:name|nom|full name)$/i,
+  title: /^(?:title|titre|poste|position|role)$/i,
+  company: /^(?:company|company name|société|entreprise|organization|org)$/i,
+  email: /^(?:email|e-mail|mail|courriel)$/i,
+  website: /^(?:website|site|url|web)$/i,
+  address: /^(?:address|adresse|postal address|mailing address)$/i,
 };
 
+const PHONE_FIELD =
+  /\b(?:phones?|téléphone|telephone|tel|mobile|cell|fax|direct|office|work|home|reception|whatsapp)\b/i;
+
+function cleanString(value: unknown): string {
+  if (typeof value !== "string") return "";
+
+  const text = value.trim();
+
+  return /^(n\/?a|not available|unknown|none|null|undefined|-)$/i.test(text)
+    ? ""
+    : text;
+}
+
+function cleanPhoneLabel(value: unknown): string {
+  if (typeof value !== "string") return "";
+
+  return value.trim().replace(/[:：]+$/u, "").trim();
+}
+
+function parsePhones(value: unknown): PhoneNumber[] {
+  const entries = Array.isArray(value) ? value : [value];
+  const phones: PhoneNumber[] = [];
+
+  for (const entry of entries) {
+    if (typeof entry === "string") {
+      const number = cleanString(entry);
+      if (number) phones.push({ number, label: "" });
+      continue;
+    }
+
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      continue;
+    }
+
+    const item = entry as Record<string, unknown>;
+    const number = cleanString(item.number);
+
+    if (!number) continue;
+
+    phones.push({
+      number,
+      label: cleanPhoneLabel(item.label),
+    });
+  }
+
+  return phones;
+}
+
+function looksLikePhoneNumber(value: string): boolean {
+  return (
+    (value.match(/\d/g)?.length ?? 0) >= 5 &&
+    /^\+?[\d\s()./-]+(?:\s*(?:ext\.?|x|#)\s*\d+)?$/i.test(value)
+  );
+}
+
 function parseMarkdownList(raw: string): ContactData | null {
-  const lines = raw.split("\n");
   const contact = emptyContact();
   let matched = 0;
-  for (const line of lines) {
-    const m = line.match(/^[\s*-]+\**([^:*]+)\**\s*:\s*\**(.+?)\**\s*$/);
-    if (!m) continue;
-    const [, fieldRaw, value] = m;
-    const trimmedValue = value.trim();
-    if (!trimmedValue || /^none$/i.test(trimmedValue)) continue;
-    for (const [key, pattern] of Object.entries(FIELD_ALIASES) as [
-      keyof ContactData,
-      RegExp,
-    ][]) {
-      if (pattern.test(fieldRaw.trim())) {
-        contact[key] = trimmedValue;
-        matched++;
-        break;
-      }
+
+  for (const line of raw.split("\n")) {
+    const match = line.match(
+      /^\s*(?:[-*]\s+)?\**([^:*]+?)\**\s*:\s*\**(.+?)\**\s*$/,
+    );
+
+    if (!match) continue;
+
+    const field = match[1].trim();
+    const value = cleanString(match[2]);
+
+    if (!value) continue;
+
+    const scalarField = (
+      Object.entries(FIELD_ALIASES) as [ScalarField, RegExp][]
+    ).find(([, pattern]) => pattern.test(field));
+
+    if (scalarField) {
+      contact[scalarField[0]] = value;
+      matched++;
+      continue;
+    }
+
+    // Also accept unfamiliar labels when the value looks like a number.
+    if (PHONE_FIELD.test(field) || looksLikePhoneNumber(value)) {
+      contact.phones.push({
+        number: value,
+        label: /^(phones?|téléphone|telephone|tel)$/i.test(field)
+          ? ""
+          : cleanPhoneLabel(field),
+      });
+      matched++;
     }
   }
+
   return matched > 0 ? contact : null;
 }
 
@@ -42,31 +115,67 @@ export function parseModelOutput(raw: string): ContactData {
     .replace(/```json\s*/gi, "")
     .replace(/```/g, "")
     .trim();
+
   const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+
   if (jsonMatch) {
     try {
-      const parsed = JSON.parse(jsonMatch[0]);
-      const clean = (v: unknown): string => {
-        const s = v != null ? String(v).trim() : "";
-        return /^(n\/?a|not available|unknown|none|null|undefined|-)$/i.test(s)
-          ? ""
-          : s;
-      };
-      return {
-        name: clean(parsed.name),
-        firstname: clean(parsed.firstname),
-        lastname: clean(parsed.lastname),
-        title: clean(parsed.title),
-        company: clean(parsed.company),
-        email: clean(parsed.email),
-        phone: clean(parsed.phone),
-        website: clean(parsed.website),
-        address: clean(parsed.address),
-      };
-    } catch {}
+      const parsed: unknown = JSON.parse(jsonMatch[0]);
+
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        const item = parsed as Record<string, unknown>;
+
+        return {
+          name: cleanString(item.name),
+          firstname: cleanString(item.firstname),
+          lastname: cleanString(item.lastname),
+          title: cleanString(item.title),
+          company: cleanString(item.company),
+          email: cleanString(item.email),
+          phones: parsePhones(item.phones ?? item.phone),
+          website: cleanString(item.website),
+          address: cleanString(item.address),
+        };
+      }
+    } catch {
+      // Some providers return a Markdown list instead of valid JSON.
+    }
   }
+
   return parseMarkdownList(cleaned) ?? emptyContact();
 }
 
-export const SYSTEM_PROMPT =
-  'You are a contact information extractor. Examine the image carefully. If the image does NOT contain a business card or readable contact information (e.g. it is a nature photo, a person, a landscape, or has no visible text), return {"name":"","firstname":"","lastname":"","title":"","company":"","email":"","phone":"","website":"","address":""}. If the image IS a business card, extract the information using these rules: (1) Extract all fields explicitly visible in the image. (2) For the person, set "name" to the full name exactly as printed, and split it into "firstname" (given name) and "lastname" (family name); if the split is unclear, put the whole name in "lastname" and leave "firstname" empty — do not guess. (3) If company is not printed but an email is present, infer the company name from the email domain (e.g. john@acme-corp.com → "Acme Corp"). (4) If website is not printed but an email is present, infer the website from the email domain (e.g. john@acme.com → "acme.com"). Only apply inference (3) and (4) when the field is otherwise empty. Return ONLY a valid JSON object with exactly these fields: name, firstname, lastname, title, company, email, phone, website, address. Use empty string "" for any field not present and not inferable. Never use placeholder text like "N/A", "not available", "unknown", or similar — only real values or empty string. Output only the JSON, no explanation.';
+export const SYSTEM_PROMPT = `
+You are a contact information extractor.
+
+If the image does not contain a business card or readable contact information,
+return:
+{"name":"","firstname":"","lastname":"","title":"","company":"","email":"","phones":[],"website":"","address":""}
+
+Otherwise:
+1. Extract all fields explicitly visible in the image.
+2. Set "name" to the full name exactly as printed and split it into
+   "firstname" and "lastname". If the split is unclear, put the whole name
+   in "lastname" and leave "firstname" empty.
+3. If company is missing but an email is present, infer the company from
+   the email domain.
+4. If website is missing but an email is present, infer the website from
+   the email domain.
+5. "phones" must be an array of objects with exactly these keys:
+   {"number":"...","label":"..."}
+6. Extract every phone number, including fax numbers, as a separate item.
+   Never combine multiple numbers into one string.
+7. Preserve each phone number as printed.
+8. Preserve the wording and capitalization of each printed phone label,
+   but omit trailing separator colons. For example, "Mobile:" becomes
+   "Mobile" and "Office:" becomes "Office".
+   Do not replace labels with a predefined category.
+9. If a number has no visible label, use an empty string for its label.
+   Do not invent a label.
+10. Use empty strings for missing scalar fields and [] for missing phones.
+    Do not use placeholders such as "N/A", "unknown", or "not available".
+
+Return only a valid JSON object with exactly these fields:
+name, firstname, lastname, title, company, email, phones, website, address.
+Do not include Markdown or explanations.
+`.trim();
