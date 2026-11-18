@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import type * as React from "react";
-import { render } from "react-email";
+import { render, toPlainText } from "react-email";
 
 import { emailConfig } from "@/config/email";
 
@@ -25,6 +25,8 @@ export const sendEmail = async ({ to, subject, content, from }: SendEmailParams)
 			to,
 			subject,
 			html: emailHtml,
+			// HTML-only mail is a spam signal: OVH filtered the magic link until a text/plain part was added.
+			text: toPlainText(emailHtml),
 		});
 		return { success: true, messageId: info.messageId };
 	} catch (error) {
