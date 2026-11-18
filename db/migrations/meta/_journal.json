@@ -29,6 +29,13 @@
       "when": 1782892590017,
       "tag": "0003_wealthy_patch",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790857100377,
+      "tag": "0004_spicy_revanche",
+      "breakpoints": true
     }
   ]
 }
