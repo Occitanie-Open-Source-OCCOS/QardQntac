@@ -3,8 +3,7 @@ title: QardQntact
 message: If you use this software, please cite it as below.
 type: software
 authors:
-    -
-        family-names: LAGACHE
+    -   family-names: LAGACHE
         given-names: Théo
 repository-code: https://github.com/Occitanie-Open-Source-OCCOS/QardQntac
 url: https://occos.fr
@@ -25,5 +24,5 @@ keywords:
     - open-source
     - pwa
 license: MIT
-version: 1.1.20
+version: 1.2.0
 date-released: '2026-06-01'
